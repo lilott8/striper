@@ -1,0 +1,14 @@
+administer striper:
+  title: 'Administer Stripe settings'
+  description: 'Manage stripe settings'
+  restrict access: true
+view own subscription:
+  title: 'View own subscription status'
+
+access responder:
+  title: 'Access Responder Webhook'
+  description: 'Allows Stripe to send data here'
+
+lifetime subscriber:
+  title: 'Lifetime subscriber'
+  description: 'These people receive the service for free for life'

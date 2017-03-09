@@ -1,0 +1,23 @@
+striper.settings.keys:
+  path: '/admin/config/striper/settings/keys'
+  defaults:
+    _form: '\Drupal\striper\StriperKeySettingsForm'
+    _title: 'Stripe Webhook Settings'
+  requirements:
+      _permission: 'administer striper'
+
+striper.settings.sync:
+  path: '/admin/config/striper/settings/sync'
+  defaults:
+    _form: '\Drupal\striper\StriperSyncSettingsForm'
+    _title: 'Stripe Sync Settings'
+  requirements:
+    _permission: 'administer striper'
+
+striper.webhook:
+  path: 'stripe/webhook/responder'
+  defaults:
+    _title: 'Stripe Webhook Responder'
+    _controller: '\Drupal\striper\Controller\StriperResponderController::respond'
+    requirements:
+    _permission: 'access responder'

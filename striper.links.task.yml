@@ -1,0 +1,9 @@
+striper.settings.keys:
+  title: 'Manage Keys'
+  route_name: 'striper.settings.keys'
+  base_route: 'striper.settings.keys'
+
+striper.settings.sync:
+  title: 'Manage Sync'
+  route_name: 'striper.settings.sync'
+  base_route: 'striper.settings.keys'

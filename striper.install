@@ -1,0 +1,82 @@
+<?php
+
+use Drupal\Core\Database\Database;
+
+function stripe_webhook_install() {
+
+}
+
+function striper_schema() {
+    $schema['striper_active_subscriptions'] = array(
+        'description' => t('Stores the table of the most recent active subscriptions'),
+        'fields' => array (
+            'id' => array(
+                'type' => 'serial',
+                'not null' => TRUE,
+                'description' => 'primary key',
+            ),
+            'uid' => array (
+                'type' => 'int',
+                'not null' => TRUE,
+                'default' => '',
+                'description' => 'user id foreign key',
+            ),
+            'plan' => array (
+                'type' => 'int',
+                'not null' => TRUE,
+                'default' => '',
+                'description' => 'striper_recurring_sync foreign key',
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+
+    $schema['striper_recurring_sync'] = array(
+        'description' => t('List of recurring plans that exist in the Stripe account'),
+        'fields' => array(
+            'id' => array(
+                'type' => 'serial',
+                'not null' => TRUE,
+                'description' => 'primary key',
+            ),
+            'name' => array(
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'description' => 'name of plan',
+            ),
+            'cost' => array (
+                'type' => 'float',
+                'not null' => TRUE,
+                'description' => 'cost of plan',
+            ),
+            'frequency' => array(
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'description' => 'frequency of recurrence',
+            ),
+        ),
+        'primary_key' => array('id'),
+    );
+
+    //return $schema;
+    return NULL;
+}
+
+/**
+ * Allows the storing of what key is to be used for the site
+ * @param $sandbox
+ */
+/*
+function striper_update_8001(&$sandbox) {
+    $column = array(
+        'type' => 'int',
+        'default' => 1,
+        'not null' => TRUE,
+    );
+
+    $schema = Database::getConnection()->schema();
+    // table, name of new column, data
+    $schema->addField('striper_recurring_sync', 'use_key', $column);
+}*/

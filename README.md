@@ -1,0 +1,1 @@
+Drupal-based Stripe integration module

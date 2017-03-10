@@ -10,3 +10,9 @@ entity.striper_plan.list_action:
   appears_on:
     - entity.striper_plan.add_form
     - entity.striper_plan.edit_form
+
+entity.striper_plan.sync_action:
+  route_name: 'entity.striper_plan.sync'
+  title: 'Sync with Stripe'
+  appears_on:
+    - entity.striper_plan.list

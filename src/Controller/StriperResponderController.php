@@ -12,7 +12,7 @@ use Drupal\Core\Controller\ControllerBase;
 
 class StriperResponderController extends ControllerBase {
 
-    public static function respond() {
+    public function respond() {
         \Drupal::logger('stripe_webhook')->notice('here');
     }
 }

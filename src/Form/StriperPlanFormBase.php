@@ -38,10 +38,10 @@ class StriperPlanFormBase extends EntityForm {
         }
 
         // only edit plans not in Stripe
-        $editable = !is_null($plan->planInStripe) ? $plan->planInStripe : FALSE;
+        $editable = !is_null($plan->planSource) ? $plan->planSource : FALSE;
         $source = $editable ? 'stripe' : 'drupal';
         $price = $plan->planInStripe ? $plan->planPrice : 0;
-        $stripeId = $plan->planInStripe ? $plan->planStripeId : "-1";
+        $stripeId = $plan->planSource ? $plan->planSource : "-1";
 
         $form['plan_name'] = array(
             '#type' => 'textfield',

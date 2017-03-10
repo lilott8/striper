@@ -81,12 +81,12 @@ use Drupal\striper\StriperPlanInterface;
  *     "form" = {
  *       "add" = "Drupal\striper\Form\StriperPlanAddForm",
  *       "edit" = "Drupal\striper\Form\StriperPlanEditForm",
- *       "delete" = "Drupal\striper\Form\StriperPlanDeleteForm"
+ *       "delete" = "Drupal\striper\Form\StriperPlanDeleteForm",
  *     }
  *   },
  *   entity_keys = {
  *     "id" = "id",
- *     "label" = "planName"
+ *     "label" = "plan_name"
  *   },
  *   links = {
  *     "edit-form" = "/admin/config/striper/plans/manage/{plan}",
@@ -143,9 +143,9 @@ class StriperPlanEntity extends ConfigEntityBase implements StriperPlanInterface
     /**
      * Is this a custom plan -- to be used for free subscriptions
      *
-     * @var boolean
+     * @var string
      */
-    public $planInStripe;
+    public $planSource;
 
     /**
      * Stripe Plan ID

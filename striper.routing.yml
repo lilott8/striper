@@ -14,6 +14,14 @@ entity.striper_plan.list:
   requirements:
     _permission: 'administer striper'
 
+entity.striper_plan.sync:
+  path: '/admin/config/striper/plans/sync'
+  defaults:
+    _controller: '\Drupal\striper\Controller\StriperPlanSyncController::sync'
+    _title: 'Sync with Stripe'
+  requirements:
+    _permission: 'administer site'
+
 entity.striper_plan.add_form:
   path: '/admin/config/striper/plans/add'
   defaults:

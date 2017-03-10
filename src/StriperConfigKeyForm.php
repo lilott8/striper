@@ -11,7 +11,7 @@ namespace Drupal\striper;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 
-class StriperKeySettingsForm extends ConfigFormBase {
+class StriperConfigKeyForm extends ConfigFormBase {
     const STRIPE_TEST_PK = 'stripe_test_publishable';
     const STRIPE_TEST_SK = 'stripe_test_secret';
     const STRIPE_LIVE_PK = 'stripe_live_publishable';
@@ -21,14 +21,14 @@ class StriperKeySettingsForm extends ConfigFormBase {
      * @inheritdoc
      */
     protected function getEditableConfigNames() {
-        return ['striper.settings.keys'];
+        return ['striper.config.keys'];
     }
 
     /**
      * @inheritdoc
      */
     public function getFormId() {
-        return 'striper_admin_settings';
+        return 'striper_admin_config';
     }
 
     public function buildForm(array $form, FormStateInterface $form_state) {
@@ -43,7 +43,7 @@ class StriperKeySettingsForm extends ConfigFormBase {
         $form['striper_test_keys']['test_secret_key'] = array(
             '#type' => 'textfield',
             '#title' => $this->t('Test secret key'),
-            '#default_value' => StriperKeySettingsForm::getKey(StriperKeySettingsForm::STRIPE_TEST_SK),
+            '#default_value' => StriperConfigKeyForm::getKey(StriperConfigKeyForm::STRIPE_TEST_SK),
             '#size' => 60,
             '#maxlength' => 128,
             '#required' => TRUE,
@@ -53,7 +53,7 @@ class StriperKeySettingsForm extends ConfigFormBase {
         $form['striper_test_keys']['test_publishable_key'] = array(
             '#type' => 'textfield',
             '#title' => $this->t('Test publishable key'),
-            '#default_value' => StriperKeySettingsForm::getKey(StriperKeySettingsForm::STRIPE_TEST_PK),
+            '#default_value' => StriperConfigKeyForm::getKey(StriperConfigKeyForm::STRIPE_TEST_PK),
             '#size' => 60,
             '#maxlength' => 128,
             '#required' => TRUE,
@@ -68,7 +68,7 @@ class StriperKeySettingsForm extends ConfigFormBase {
         $form['striper_live_keys']['live_secret_key'] = array(
             '#type' => 'textfield',
             '#title' => $this->t('Live secret key'),
-            '#default_value' => StriperKeySettingsForm::getKey(StriperKeySettingsForm::STRIPE_LIVE_SK),
+            '#default_value' => StriperConfigKeyForm::getKey(StriperConfigKeyForm::STRIPE_LIVE_SK),
             '#size' => 60,
             '#maxlength' => 128,
             '#attributes' => array('readonly' => 'readonly'),
@@ -77,7 +77,7 @@ class StriperKeySettingsForm extends ConfigFormBase {
         $form['striper_live_keys']['live_publishable_key'] = array(
             '#type' => 'textfield',
             '#title' => $this->t('Live publishable key'),
-            '#default_value' => StriperKeySettingsForm::getKey(StriperKeySettingsForm::STRIPE_LIVE_PK),
+            '#default_value' => StriperConfigKeyForm::getKey(StriperConfigKeyForm::STRIPE_LIVE_PK),
             '#size' => 60,
             '#maxlength' => 128,
             '#attributes' => array('readonly' => 'readonly'),

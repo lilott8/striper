@@ -3,3 +3,9 @@
 * @file
 * A description of what your module does.
 */
+
+use \Drupal\striper\Entity\StriperPlanEntity;
+
+function striper_plans_load($id) {
+    return StriperPlanEntity::load($id);
+}

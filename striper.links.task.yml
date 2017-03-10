@@ -1,9 +1,9 @@
-striper.settings.keys:
+striper.config.keys:
   title: 'Manage Keys'
-  route_name: 'striper.settings.keys'
-  base_route: 'striper.settings.keys'
+  route_name: 'striper.config.keys'
+  base_route: 'striper.config.keys'
 
-striper.settings.sync:
-  title: 'Manage Sync'
-  route_name: 'striper.settings.sync'
-  base_route: 'striper.settings.keys'
+striper.config.sync:
+  title: 'Manage Plans'
+  route_name: 'striper.config.plans'
+  base_route: 'striper.config.keys'

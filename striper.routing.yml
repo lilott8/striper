@@ -1,20 +1,53 @@
-striper.settings.keys:
-  path: '/admin/config/striper/settings/keys'
+striper.config.keys:
+  path: '/admin/config/striper/keys'
   defaults:
-    _form: '\Drupal\striper\StriperKeySettingsForm'
+    _form: '\Drupal\striper\StriperConfigKeyForm'
     _title: 'Stripe Webhook Settings'
   requirements:
       _permission: 'administer striper'
 
-striper.settings.sync:
-  path: '/admin/config/striper/settings/sync'
+striper.config.plans:
+  path: '/admin/config/striper/plans'
   defaults:
-    _form: '\Drupal\striper\StriperSyncSettingsForm'
-    _title: 'Stripe Sync Settings'
+    _entity_list: 'striper.config.plans'
+    _title: 'Stripe Plans Settings'
   requirements:
     _permission: 'administer striper'
 
-striper.webhook:
+striper.config.plans.list:
+  path: '/admin/config/striper/plans'
+  defaults:
+    _entity_list: 'striper.config.plans'
+    _title: 'Stripe Plans Settings'
+  requirements:
+    _permission: 'administer striper'
+
+striper.config.plans.add.form:
+  path: '/admin/config/striper/plans/add'
+  defaults:
+    _title: 'Add Custom Plan'
+    _entity_form: 'striper.config.plans.add'
+  requirements:
+    _permission: 'administer site'
+
+
+striper.config.plans.edit.form:
+  path: '/admin/config/striper/plans/{plan}'
+  defaults:
+    _title: 'Edit Plan'
+    _entity_form: 'striper.config.plans.edit'
+  requirements:
+    _permission: 'administer site'
+
+striper.config.plans.delete.form:
+  path: '/admin/config/striper/plans/{plan}/delete'
+  defaults:
+    _title: 'Delete Plan'
+    _entity_form: 'striper.config.plans.delete'
+  requirements:
+    _permission: 'administer site'
+
+striper.app.webhook:
   path: 'stripe/webhook/responder'
   defaults:
     _title: 'Stripe Webhook Responder'

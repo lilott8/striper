@@ -1,0 +1,28 @@
+striper.plans.*:
+  type: mapping
+  label: "Plan"
+  mapping:
+    id:
+      type: string
+      label: 'Plan ID'
+    uuid:
+      type: string
+      label: 'UUID'
+    plan_name:
+      type: string
+      label: 'Plan Name'
+    plan_price:
+      type: integer
+      label: 'Price of Plan'
+    plan_frequency:
+      type: string
+      label: 'Plan Frequency'
+    plan_active:
+      type: boolean
+      label: 'Active'
+    plan_source:
+      type: string
+      label: 'Plan Source'
+    plan_stripe_id:
+      type: string
+      label: 'Stripe Plan ID'

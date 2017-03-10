@@ -3,7 +3,7 @@ striper.config.keys:
   route_name: 'striper.config.keys'
   base_route: 'striper.config.keys'
 
-striper.config.sync:
+striper.config.plans:
   title: 'Manage Plans'
-  route_name: 'striper.config.plans'
+  route_name: 'entity.striper_plan.list'
   base_route: 'striper.config.keys'

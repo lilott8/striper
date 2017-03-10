@@ -80,7 +80,7 @@ use Drupal\striper\StriperPlanInterface;
  *     "list_builder" = "Drupal\striper\Controller\StriperPlanListBuilder",
  *     "form" = {
  *       "add" = "Drupal\striper\Form\StriperPlanAddForm",
- *       "edit" = "Drupal\sriper\Form\StriperPlanEditForm",
+ *       "edit" = "Drupal\striper\Form\StriperPlanEditForm",
  *       "delete" = "Drupal\striper\Form\StriperPlanDeleteForm"
  *     }
  *   },

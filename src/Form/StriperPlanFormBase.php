@@ -47,7 +47,7 @@ class StriperPlanFormBase extends EntityForm {
             '#type' => 'textfield',
             '#title' => $this->t('Name'),
             '#maxlength' => 255,
-            '#default_value' => $plan->planName,
+            '#default_value' => $plan->plan_name,
             '#disabled' => $editable,
             '#required' => TRUE,
         );
@@ -86,14 +86,14 @@ class StriperPlanFormBase extends EntityForm {
             '#type' => 'textfield',
             '#title' => $this->t('Frequency'),
             '#maxlength' => 255,
-            '#default_value' => $plan->planFrequency,
+            '#default_value' => $plan->plan_frequency,
             '#disabled' => $editable,
         );
 
         $form['plan_active'] = array(
             '#type' => 'checkbox',
             '#title' => $this->t('Enable this plan'),
-            '#default_value' => $plan->planActive,
+            '#default_value' => $plan->plan_active,
         );
 
         $form['plan_source'] = array(
@@ -140,13 +140,13 @@ class StriperPlanFormBase extends EntityForm {
         if($status == SAVED_UPDATED) {
             // If we edited an existing entity...
             drupal_set_message($this->t('Plan %name has been updated.', array('%name' => $plan->planName)));
-            $this->logger('contact')->notice('Robot %name has been updated.', ['%name' => $plan->planName, 'link' => $editLink]);
+            $this->logger('contact')->notice('Plan %name has been updated.', ['%name' => $plan->planName]);
         } else {
             // If we created a new entity...
-            drupal_set_message($this->t('Robot %name has been added.', array('%name' => $plan->planName)));
-            $this->logger('contact')->notice('Robot %name has been added.', ['%name' => $plan->planName, 'link' => $editLink]);
+            drupal_set_message($this->t('Plan %name has been added.', array('%name' => $plan->planName)));
+            $this->logger('contact')->notice('Plan %name has been added.', ['%name' => $plan->planName]);
         }
-        $form_state->setRedirect('striper.config.plans.list');
+        $form_state->setRedirect('entity.striper_plan.list');
     }
 
 

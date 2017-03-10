@@ -12,6 +12,20 @@ namespace Drupal\striper\Form;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Link;
+
+/**
+ * Class StriperPlanFormBase.
+ *
+ * Typically, we need to build the same form for both adding a new entity,
+ * and editing an existing entity. Instead of duplicating our form code,
+ * we create a base class. Drupal never routes to this class directly,
+ * but instead through the child classes of StriperPlanAddForm and StriperEditForm.
+ *
+ * @package Drupal\striper\Form
+ *
+ * @ingroup entity.striper_plan
+ */
 
 class StriperPlanFormBase extends EntityForm {
 
@@ -107,7 +121,7 @@ class StriperPlanFormBase extends EntityForm {
 
     public function exists($entity_id, array $element, FormStateInterface $form_state) {
         // Use the query factory to build a new robot entity query.
-        $query = \Drupal::entityQuery('striper_plans');
+        $query = \Drupal::entityQuery('striper_plan');
 
         // Query the entity ID to see if its in use.
         $result = $query->condition('id', $element['#field_prefix'] . $entity_id)->execute();
@@ -132,7 +146,7 @@ class StriperPlanFormBase extends EntityForm {
             drupal_set_message($this->t('Robot %name has been added.', array('%name' => $plan->planName)));
             $this->logger('contact')->notice('Robot %name has been added.', ['%name' => $plan->planName, 'link' => $editLink]);
         }
-        $form_state->setRedirect('entity.striper.plans.list');
+        $form_state->setRedirect('striper.config.plans.list');
     }
 
 

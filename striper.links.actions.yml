@@ -1,12 +1,12 @@
-striper.config.plans.add:
-  route_name: 'striper.config.plans.add.form'
+entity.striper_plan.add_action:
+  route_name: 'entity.striper_plan.add.form'
   title: 'Add Custom Plan'
   appears_on:
-    - entity.striper.config.plans.list
+    - entity.striper_plan.list
 
-striper.config.plans.list:
-  route_name: 'striper.config.plans.list'
+entity.striper_plan.list_action:
+  route_name: 'entity.striper_plan.list'
   title: 'List Plans'
   appears_on:
-    - entity.striper.config.plans.add.form
-    - entity.striper.config.plans.edit.form
+    - entity.striper_plan.add_form
+    - entity.striper_plan.edit_form

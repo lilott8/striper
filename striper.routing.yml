@@ -6,44 +6,35 @@ striper.config.keys:
   requirements:
       _permission: 'administer striper'
 
-striper.config.plans:
+entity.striper_plan.list:
   path: '/admin/config/striper/plans'
   defaults:
-    _entity_list: 'striper.config.plans'
+    _entity_list: 'striper_plan'
     _title: 'Stripe Plans Settings'
   requirements:
     _permission: 'administer striper'
 
-striper.config.plans.list:
-  path: '/admin/config/striper/plans'
-  defaults:
-    _entity_list: 'striper.config.plans'
-    _title: 'Stripe Plans Settings'
-  requirements:
-    _permission: 'administer striper'
-
-striper.config.plans.add.form:
+entity.striper_plan.add_form:
   path: '/admin/config/striper/plans/add'
   defaults:
     _title: 'Add Custom Plan'
-    _entity_form: 'striper.config.plans.add'
+    _entity_form: 'striper_plan.add'
   requirements:
     _permission: 'administer site'
 
-
-striper.config.plans.edit.form:
-  path: '/admin/config/striper/plans/{plan}'
+entity.striper_plan.edit_form:
+  path: '/admin/config/striper/plans/{striper_plan}'
   defaults:
     _title: 'Edit Plan'
-    _entity_form: 'striper.config.plans.edit'
+    _entity_form: 'striper_plan.edit'
   requirements:
     _permission: 'administer site'
 
-striper.config.plans.delete.form:
-  path: '/admin/config/striper/plans/{plan}/delete'
+entity.striper_plan.delete_form:
+  path: '/admin/config/striper/plans/{striper_plan}/delete'
   defaults:
     _title: 'Delete Plan'
-    _entity_form: 'striper.config.plans.delete'
+    _entity_form: 'striper_plan.delete'
   requirements:
     _permission: 'administer site'
 

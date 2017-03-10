@@ -13,9 +13,9 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\striper\StriperPlanInterface;
 
 /**
- * Defines the stripe plan entity
+ * Defines the striper_plan entity
  *
- * @ingroup config_entity_example
+ * @ingroup entity.striper_plan
  *
  * This is the main definition of the entity type. From it, an entityType is
  * derived. The most important properties in this example are listed below.
@@ -72,12 +72,12 @@ use Drupal\striper\StriperPlanInterface;
  * is read and cached. Don't forget to clear cache after changes.
  *
  * @ConfigEntityType(
- *   id = "striper.config.plans",
+ *   id = "striper_plan",
  *   label = @Translation("Striper"),
- *   admin_permission = "administer striper",
+ *   admin_permission = "administer site",
  *   handlers = {
  *     "access" = "Drupal\striper\StriperAccessController",
- *     "list_builder" = "Drupal\striper\Controller\StriperListBuilder",
+ *     "list_builder" = "Drupal\striper\Controller\StriperPlanListBuilder",
  *     "form" = {
  *       "add" = "Drupal\striper\Form\StriperPlanAddForm",
  *       "edit" = "Drupal\sriper\Form\StriperPlanEditForm",

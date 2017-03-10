@@ -8,6 +8,15 @@
 
 namespace Drupal\striper\Form;
 
+/**
+ * Class StriperPlanAddForm.
+ *
+ * Provides the add form for our Striper_plan entity.
+ *
+ * @package Drupal\striper\Form
+ *
+ * @ingroup entity.striper_plan
+ */
 
 class StriperPlanAddForm extends StriperPlanFormBase {
 

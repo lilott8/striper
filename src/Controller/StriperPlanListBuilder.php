@@ -12,7 +12,7 @@ namespace Drupal\striper\Controller;
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Entity\EntityInterface;
 
-class StriperListBuilder extends ConfigEntityListBuilder {
+class StriperPlanListBuilder extends ConfigEntityListBuilder {
 
     /**
      * Builds the header row for the entity listing.

@@ -6,6 +6,6 @@ striper.admin:
   route_name: striper.config.keys
   weight: 100
 
-striper.config.plans.menu:
+entity.striper_plan.menu:
   title: 'Stripe Plans'
-  route_name: striper.config.plans
+  route_name: 'entity.striper_plan.list'

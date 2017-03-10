@@ -37,7 +37,7 @@ class StriperConfigPlanForm extends ConfigFormBase {
 
     protected function getEditableConfigNames() {
         // TODO: Implement getEditableConfigNames() method.
-        return ['striper.config.plans.list'];
+        return ['entity.striper_plans.list'];
     }
 
     public function getFormId() {

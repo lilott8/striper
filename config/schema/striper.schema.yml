@@ -1,4 +1,4 @@
-striper.plans.*:
+striper.striper_plan.*:
   type: mapping
   label: "Plan"
   mapping:

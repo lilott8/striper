@@ -1,5 +1,5 @@
 entity.striper_plan.add_action:
-  route_name: 'entity.striper_plan.add.form'
+  route_name: 'entity.striper_plan.add_form'
   title: 'Add Custom Plan'
   appears_on:
     - entity.striper_plan.list

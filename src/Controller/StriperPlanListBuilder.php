@@ -25,10 +25,8 @@ class StriperPlanListBuilder extends ConfigEntityListBuilder {
 
         if($this->config->get('use_key') == 'live') {
             $message = 'You are using your live keys.';
-            //$key = striper\StriperConfigKeyForm::getKey(striper\StriperConfigKeyForm::STRIPE_LIVE_SK);
         } else {
             $message = '';
-            //$key = striper\StriperConfigKeyForm::getKey(striper\StriperConfigKeyForm::STRIPE_TEST_SK);
         }
 
         if(!empty($message)) {
@@ -50,7 +48,7 @@ class StriperPlanListBuilder extends ConfigEntityListBuilder {
         $header['price'] = $this->t('Cost');
         $header['frequency'] = $this->t('Frequency');
         $header['active_plan'] = array('data' => $this->t('Active'), 'field' => 'active', 'sort' => 'asc');
-        $header['plan_source'] = $this->t('From Stripe');
+        $header['plan_source'] = $this->t('Source');
         return $header + parent::buildHeader();
     }
 

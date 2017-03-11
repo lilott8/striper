@@ -1,7 +1,7 @@
 id: lifetime
 plan_name: 'Lifetime subscription'
 plan_price: 0
-plan_frequency: 00000
+plan_frequency: '0-0'
 plan_active: true
-plan_source: false
+plan_source: 'system'
 plan_stripe_id: -1

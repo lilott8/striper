@@ -12,7 +12,7 @@ striper.striper_plan.*:
       type: string
       label: 'Plan Name'
     plan_price:
-      type: integer
+      type: float
       label: 'Price of Plan'
     plan_frequency:
       type: string
@@ -23,6 +23,3 @@ striper.striper_plan.*:
     plan_source:
       type: string
       label: 'Plan Source'
-    plan_stripe_id:
-      type: string
-      label: 'Stripe Plan ID'

@@ -36,16 +36,21 @@ class StriperPlanDeleteForm extends EntityConfirmFormBase {
     }
 
     public function submitForm(array &$form, FormStateInterface $form_state) {
-        if($this->entity->planInStripe) {
-            $this->entity->planActive = FALSE;
-            $this->entity->save();
-            $message = 'Plan %plan is from Stripe, the plan is being deactivated.';
-        } else {
-            $this->entity->delete();
-            $message = 'Plan %plan was deleted.';
+        switch($this->entity->plan_source) {
+            case StriperPlanFormBase::SOURCE['user']:
+            default:
+                $this->entity->delete();
+                $message = 'Plan %plan was deleted.';
+                break;
+            case StriperPlanFormBase::SOURCE['system']:
+            case StriperPlanFormBase::SOURCE['stripe']:
+                $this->entity->plan_active = FALSE;
+                $this->entity->save();
+                $message = 'Plan %plan is from Stripe, the plan is being deactivated.';
+            break;
         }
 
-        drupal_set_message($message, array('%plan', $this->entity->planName));
+        drupal_set_message($message, array('%plan', $this->entity->plan_name));
 
         $form_state->setRedirectUrl($this->getCancelUrl());
     }

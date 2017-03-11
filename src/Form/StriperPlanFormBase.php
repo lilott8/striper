@@ -29,6 +29,12 @@ use Drupal\Core\Link;
 
 class StriperPlanFormBase extends EntityForm {
 
+    const SOURCE = array(
+        'stripe' => 'stripe',
+        'user' => 'user',
+        'system' => 'system',
+    );
+
     public function buildForm(array $form, FormStateInterface $form_state) {
 
         $plan = $this->entity;
@@ -38,17 +44,31 @@ class StriperPlanFormBase extends EntityForm {
         }
 
         // only edit plans not in Stripe
-        $editable = !is_null($plan->planSource) ? $plan->planSource : FALSE;
-        $source = $editable ? 'stripe' : 'drupal';
-        $price = $plan->planInStripe ? $plan->planPrice : 0;
-        $stripeId = $plan->planSource ? $plan->planSource : "-1";
+        switch($plan->plan_source) {
+            case StriperPlanFormBase::SOURCE['user']:
+            default:
+                $editable = TRUE;
+                $source = StriperPlanFormBase::SOURCE['user'];
+                $price = $plan->plan_price;
+                break;
+            case StriperPlanFormBase::SOURCE['system']:
+                $editable = FALSE;
+                $source = StriperPlanFormBase::SOURCE['system'];
+                $price = $plan->plan_price;
+                break;
+            case StriperPlanFormBase::SOURCE['stripe']:
+                $editable = FALSE;
+                $source = StriperPlanFormBase::SOURCE['stripe'];
+                $price = $plan->plan_price / 100;
+                break;
+        }
 
         $form['plan_name'] = array(
             '#type' => 'textfield',
             '#title' => $this->t('Name'),
             '#maxlength' => 255,
             '#default_value' => $plan->plan_name,
-            '#disabled' => $editable,
+            '#disabled' => !$editable,
             '#required' => TRUE,
         );
 
@@ -70,16 +90,7 @@ class StriperPlanFormBase extends EntityForm {
             '#title' => $this->t('Price'),
             '#maxlength' => 255,
             '#default_value' => $price,
-            '#disabled' => $editable,
-        );
-
-        $form['plan_stripe_id'] = array(
-            '#type' => 'hidden',
-            '#title' => $this->t(''),
-            '#maxlength' => 255,
-            '#default_value' => $stripeId,
-            '#disabled' => TRUE,
-            '#attributes' => array('#readonly'=>'readonly'),
+            '#disabled' => !$editable,
         );
 
         $form['plan_frequency'] = array(
@@ -87,7 +98,7 @@ class StriperPlanFormBase extends EntityForm {
             '#title' => $this->t('Frequency'),
             '#maxlength' => 255,
             '#default_value' => $plan->plan_frequency,
-            '#disabled' => $editable,
+            '#disabled' => !$editable,
         );
 
         $form['plan_active'] = array(
@@ -100,7 +111,7 @@ class StriperPlanFormBase extends EntityForm {
             '#type' => 'hidden',
             '#title' => t('Plan Source'),
             '#default_value' => $source,
-            '#disabled' => !$editable,
+            '#disabled' => $editable,
             '#attributes' => array('#readonly' =>'readonly'),
         );
 

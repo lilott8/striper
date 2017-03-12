@@ -12,7 +12,7 @@ namespace Drupal\striper\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use \Symfony\Component\HttpFoundation\Response;
 
-class StriperUserList extends ControllerBase {
+class StriperSubscriptionList extends ControllerBase {
 
     public function listUsers() {
         $response = new Response();

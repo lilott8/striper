@@ -1,16 +1,24 @@
 striper.config.keys:
   path: '/admin/config/striper/keys'
   defaults:
-    _form: '\Drupal\striper\StriperConfigKeyForm'
+    _form: '\Drupal\striper\Form\StriperConfigKeyForm'
     _title: 'Stripe Webhook Settings'
   requirements:
       _permission: 'administer striper'
 
-striper.config.users:
-  path: '/admin/config/striper/users'
+striper.config.subscriptions:
+  path: '/admin/config/striper/subscriptions'
   defaults:
-    _controller: '\Drupal\striper\Controller\StriperUserList::listUsers'
+    _controller: '\Drupal\striper\Controller\StriperSubscriptionList::listUsers'
     _title: 'Striper Subscriptions'
+  requirements:
+    _permission: 'administer site'
+
+striper.config.payment_portal:
+  path: '/admin/config/striper/portal'
+  defaults:
+    _form: '\Drupal\striper\Form\StriperConfigPortalForm'
+    _title: 'Configure Stripe Portal'
   requirements:
     _permission: 'administer site'
 

@@ -6,7 +6,7 @@
  * Time: 8:07 PM
  */
 
-namespace Drupal\striper;
+namespace Drupal\striper\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;

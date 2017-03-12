@@ -8,7 +8,12 @@ striper.config.plans:
   route_name: 'entity.striper_plan.list'
   base_route: 'striper.config.keys'
 
-striper.config.users:
-  title: 'View Users'
-  route_name: 'striper.config.users'
+striper.config.subscriptions:
+  title: 'View Subscriptions'
+  route_name: 'striper.config.subscriptions'
+  base_route: 'striper.config.keys'
+
+striper.config.payment_portal:
+  title: 'Customize Portal'
+  route_name: 'striper.config.payment_portal'
   base_route: 'striper.config.keys'

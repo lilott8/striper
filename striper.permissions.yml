@@ -12,3 +12,6 @@ access responder:
 lifetime subscriber:
   title: 'Lifetime subscriber'
   description: 'These people receive the service for free for life'
+
+permission_callbacks:
+  - Drupal\striper\StriperPermissions::permissions

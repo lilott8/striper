@@ -32,18 +32,18 @@ class StriperPlanSyncController extends ControllerBase {
 
     public function sync() {
         $plans = \Stripe\Plan::all();
-        \Drupal::logger('stripe_sync')->notice($plans);
 
         $syncedPlans = 0;
         foreach($plans['data'] as $plan) {
-            \Drupal::logger('stripe_sync')->notice($plan['id']);
-            if(is_null(\Drupal::entityTypeManager()->getStorage('striper_plan')->load($plan['id']))) {
+            $machine_name = str_replace('-', '_', preg_replace('@[^a-z0-9-]+@', '_', strtolower($plan['id'])));
+            \Drupal::logger('stripe_sync')->notice($this->t('%entity', array('%entity'=>\Drupal::entityTypeManager()->getStorage('striper_plan')->load($machine_name))));
+            if(is_null(\Drupal::entityTypeManager()->getStorage('striper_plan')->load($machine_name))) {
                 $entity = \Drupal::entityTypeManager()->getStorage('striper_plan')->create(
                     array(
-                        'id' => str_replace('-', '_', preg_replace('@[^a-z0-9-]+@', '_', strtolower($plan['id']))),
-                        'machine_name' => str_replace('-', '_', preg_replace('@[^a-z0-9-]+@', '_', strtolower($plan['id']))),
+                        'id' => $machine_name,
+                        'machine_name' => $machine_name,
                         'plan_name' => $plan['name'],
-                        'plan_price' => $plan['price']/100,
+                        'plan_price' => $plan['amount'],
                         'plan_frequency' => $this->buildFrequency($plan),
                         'plan_active' => TRUE,
                         'plan_source' => 'stripe',
@@ -54,10 +54,16 @@ class StriperPlanSyncController extends ControllerBase {
                 if($result == SAVED_NEW || $result == SAVED_UPDATED) {
                     $syncedPlans++;
                 }
+            } else {
+                \Drupal::logger('stripe_sync')->notice($this->t("%id already exists", array('%id' => $machine_name)));
             }
         }
 
-        drupal_set_message($this->t("Imported/Updated %records from Stripe", array('%records' => $syncedPlans)));
+        if($syncedPlans > 0) {
+            drupal_set_message($this->t("Imported/Updated %records from Stripe", array('%records' => $syncedPlans)));
+        } else {
+            drupal_set_message($this->t("No Stripe records found/altered"), 'notice');
+        }
         return $this->redirect('entity.striper_plan.list');
     }
 

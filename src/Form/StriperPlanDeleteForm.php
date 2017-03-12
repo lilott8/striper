@@ -45,7 +45,8 @@ class StriperPlanDeleteForm extends EntityConfirmFormBase {
             case StriperPlanFormBase::SOURCE['system']:
             case StriperPlanFormBase::SOURCE['stripe']:
                 $this->entity->plan_active = FALSE;
-                $this->entity->save();
+                //$this->entity->save();
+                $this->entity->delete();
                 $message = 'Plan %plan is from Stripe, the plan is being deactivated.';
             break;
         }

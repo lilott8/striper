@@ -91,6 +91,7 @@ class StriperPlanFormBase extends EntityForm {
             '#maxlength' => 255,
             '#default_value' => $price,
             '#disabled' => !$editable,
+            '#description' => $this->t('in cents. e.g., $6.99 => 699'),
         );
 
         $form['plan_frequency'] = array(
@@ -99,6 +100,7 @@ class StriperPlanFormBase extends EntityForm {
             '#maxlength' => 255,
             '#default_value' => $plan->plan_frequency,
             '#disabled' => !$editable,
+            '#description' => $this->t('[frequency]-[period] => 1-week (one time a week) or 3-month (once every three months)'),
         );
 
         $form['plan_active'] = array(

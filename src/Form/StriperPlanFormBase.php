@@ -40,34 +40,44 @@ class StriperPlanFormBase extends EntityForm {
         $plan = $this->entity;
 
         if($this->operation == 'edit') {
-            $form['#title'] = $this->t('Edit Plan: @name', array('@name' => $plan->planName));
-        }
+            $form['#title'] = $this->t('Edit Plan: @name', array('@name' => $plan->plan_name));
+            $active = $plan->plan_active;
+            $frequency = $plan->plan_frequency;
+            $name = $plan->plan_name;
 
-        // only edit plans not in Stripe
-        switch($plan->plan_source) {
-            case StriperPlanFormBase::SOURCE['user']:
-            default:
-                $editable = TRUE;
-                $source = StriperPlanFormBase::SOURCE['user'];
-                $price = $plan->plan_price;
-                break;
-            case StriperPlanFormBase::SOURCE['system']:
-                $editable = FALSE;
-                $source = StriperPlanFormBase::SOURCE['system'];
-                $price = $plan->plan_price;
-                break;
-            case StriperPlanFormBase::SOURCE['stripe']:
-                $editable = FALSE;
-                $source = StriperPlanFormBase::SOURCE['stripe'];
-                $price = $plan->plan_price / 100;
-                break;
+            // only edit plans not in Stripe
+            switch($plan->plan_source) {
+                case StriperPlanFormBase::SOURCE['user']:
+                default:
+                    $editable = TRUE;
+                    $source = StriperPlanFormBase::SOURCE['user'];
+                    $price = $plan->plan_price;
+                    break;
+                case StriperPlanFormBase::SOURCE['system']:
+                    $editable = FALSE;
+                    $source = StriperPlanFormBase::SOURCE['system'];
+                    $price = $plan->plan_price;
+                    break;
+                case StriperPlanFormBase::SOURCE['stripe']:
+                    $editable = FALSE;
+                    $source = StriperPlanFormBase::SOURCE['stripe'];
+                    $price = $plan->plan_price;
+                    break;
+            }
+        } else {
+            $active = FALSE;
+            $frequency = '';
+            $editable = TRUE;
+            $source = StriperPlanFormBase::SOURCE['user'];
+            $price = '';
+            $name = '';
         }
 
         $form['plan_name'] = array(
             '#type' => 'textfield',
             '#title' => $this->t('Name'),
             '#maxlength' => 255,
-            '#default_value' => $plan->plan_name,
+            '#default_value' => $name,
             '#disabled' => !$editable,
             '#required' => TRUE,
         );
@@ -98,7 +108,7 @@ class StriperPlanFormBase extends EntityForm {
             '#type' => 'textfield',
             '#title' => $this->t('Frequency'),
             '#maxlength' => 255,
-            '#default_value' => $plan->plan_frequency,
+            '#default_value' => $frequency,
             '#disabled' => !$editable,
             '#description' => $this->t('[frequency]-[period] => 1-week (one time a week) or 3-month (once every three months)'),
         );
@@ -106,7 +116,7 @@ class StriperPlanFormBase extends EntityForm {
         $form['plan_active'] = array(
             '#type' => 'checkbox',
             '#title' => $this->t('Enable this plan'),
-            '#default_value' => $plan->plan_active,
+            '#default_value' => $active,
         );
 
         $form['plan_source'] = array(

@@ -7,3 +7,8 @@ striper.config.plans:
   title: 'Manage Plans'
   route_name: 'entity.striper_plan.list'
   base_route: 'striper.config.keys'
+
+striper.config.users:
+  title: 'View Users'
+  route_name: 'striper.config.users'
+  base_route: 'striper.config.keys'

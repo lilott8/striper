@@ -6,6 +6,14 @@ striper.config.keys:
   requirements:
       _permission: 'administer striper'
 
+striper.config.users:
+  path: '/admin/config/striper/users'
+  defaults:
+    _controller: '\Drupal\striper\Controller\StriperUserList::listUsers'
+    _title: 'Striper Subscriptions'
+  requirements:
+    _permission: 'administer site'
+
 entity.striper_plan.list:
   path: '/admin/config/striper/plans'
   defaults:

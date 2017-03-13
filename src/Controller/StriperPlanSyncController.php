@@ -8,26 +8,20 @@
 
 namespace Drupal\striper\Controller;
 
-use Drupal\striper;
+use Drupal\striper\Form;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\striper\StriperStripeAPI;
 
 class StriperPlanSyncController extends ControllerBase {
 
-    private $secretKey;
-    private $publicKey;
+    private $stripe;
     private $config;
 
     function __construct() {
         $this->config = \Drupal::config('striper.config');
-        if($this->config->get('use_key') == 'live') {
-            $this->secretKey = striper\StriperConfigKeyForm::getKey(striper\StriperConfigKeyForm::STRIPE_LIVE_SK);
-            $this->publicKey = striper\StriperConfigKeyForm::getKey(striper\StriperConfigKeyForm::STRIPE_LIVE_PK);
-        } else {
-            $this->secretKey = striper\StriperConfigKeyForm::getKey(striper\StriperConfigKeyForm::STRIPE_TEST_SK);
-            $this->publicKey = striper\StriperConfigKeyForm::getKey(striper\StriperConfigKeyForm::STRIPE_TEST_PK);
-        }
+        $this->stripe = new StriperStripeAPI();
 
-        \Stripe\Stripe::setApiKey($this->secretKey);
+        \Stripe\Stripe::setApiKey($this->stripe->secretKey);
     }
 
     public function sync() {

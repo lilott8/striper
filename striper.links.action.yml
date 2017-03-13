@@ -16,3 +16,9 @@ entity.striper_plan.sync_action:
   title: 'Sync with Stripe'
   appears_on:
     - entity.striper_plan.list
+
+striper.config.plan.subscriptions_action:
+  route_name: 'striper.config.subscriptions.sync'
+  title: 'Sync with stripe'
+  appears_on:
+    - striper.config.subscriptions

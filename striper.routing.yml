@@ -14,6 +14,14 @@ striper.config.subscriptions:
   requirements:
     _permission: 'administer site'
 
+striper.config.subscriptions.sync:
+  path: '/admin/config/striper/subscriptions/sync'
+  defaults:
+    _controller: '\Drupal\striper\Controller\StriperSubscriptionSync::sync'
+    _title: 'Sync Subscriptions with Stripe'
+  requirements:
+    _permission: 'administer site'
+
 striper.config.payment_portal:
   path: '/admin/config/striper/portal'
   defaults:
@@ -63,9 +71,9 @@ entity.striper_plan.delete_form:
     _permission: 'administer site'
 
 striper.app.webhook:
-  path: 'stripe/webhook/responder'
+  path: 'striper/webhook/subscriptions'
   defaults:
     _title: 'Stripe Webhook Responder'
-    _controller: '\Drupal\striper\Controller\StriperResponderController::respond'
+    _controller: '\Drupal\striper\Controller\StriperWebhookResponderController::subscriptions'
     requirements:
-    _permission: 'access responder'
+    _permission: 'administer site'

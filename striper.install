@@ -7,61 +7,66 @@ function stripe_webhook_install() {
 }
 
 function striper_schema() {
-    $schema['striper_active_subscriptions'] = array(
-        'description' => t('Stores the table of the most recent active subscriptions'),
-        'fields' => array (
-            'id' => array(
-                'type' => 'serial',
-                'not null' => TRUE,
-                'description' => 'primary key',
-            ),
-            'uid' => array (
-                'type' => 'int',
-                'not null' => TRUE,
-                'default' => '',
-                'description' => 'user id foreign key',
-            ),
-            'plan' => array (
-                'type' => 'int',
-                'not null' => TRUE,
-                'default' => '',
-                'description' => 'striper_recurring_sync foreign key',
-            ),
-        ),
-        'primary key' => array('id'),
-    );
-
-    $schema['striper_recurring_sync'] = array(
-        'description' => t('List of recurring plans that exist in the Stripe account'),
+    $schema['striper_subscriptions'] = array(
+        'description' => 'Stores the table of the most recent subscriptions',
         'fields' => array(
             'id' => array(
                 'type' => 'serial',
                 'not null' => TRUE,
+                'unsigned' => TRUE,
                 'description' => 'primary key',
             ),
-            'name' => array(
+            'uid' => array (
+                'type' => 'int',
+                'not null' => FALSE,
+                'unsigned' => TRUE,
+                'default' => 0,
+                'description' => 'drupal {users}.uid foreign key',
+            ),
+            'plan' => array (
                 'type' => 'varchar',
                 'length' => 255,
                 'not null' => TRUE,
-                'description' => 'name of plan',
+                'default' => 'unknown',
+                'description' => 'Stripe plan name',
             ),
-            'cost' => array (
-                'type' => 'float',
-                'not null' => TRUE,
-                'description' => 'cost of plan',
-            ),
-            'frequency' => array(
+            'stripe_cid' => array(
                 'type' => 'varchar',
                 'length' => 255,
                 'not null' => TRUE,
-                'description' => 'frequency of recurrence',
+                'default' => '',
+                'description' => 'Stripe customer id'
+            ),
+            'status' => array(
+                'type' => 'varchar',
+                'not null' => TRUE,
+                'length' => 255,
+                'default' => 'trialing',
+                'description' => 'What is the status of the Stripe subscription',
+            ),
+            'plan_end' => array(
+                'type' => 'int',
+                'not null' => TRUE,
+                'default' => 0,
+                'unsigned' => TRUE,
+                'description' => 'When the subscription ends',
             ),
         ),
-        'primary_key' => array('id'),
+        //'unique keys' => array(
+        //    'striper_cid' => array('striper_cid')
+        //),
+        'indexes' => array(
+            'striper_cid' => array('striper_cid'),
+        ),
+        'foreign keys' => array(
+            'user_fk' => array(
+                'table' => 'users',
+                'columns' => array('uid' => 'uid')
+            ),
+        ),
+        'primary key' => array('id'),
     );
-
-    //return $schema;
-    return NULL;
+    return $schema;
 }
 
 /**

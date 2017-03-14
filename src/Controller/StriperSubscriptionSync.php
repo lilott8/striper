@@ -44,10 +44,13 @@ class StriperSubscriptionSync extends ControllerBase {
                  */
                 $stripe_customer = \Stripe\Customer::retrieve($subscriber->customer);
 
-                $drupal_user = \Drupal::database()->query("SELECT mail, uid FROM {users_field_data} WHERE mail = :mail",
-                                                   [':mail' => $stripe_customer->email])->fetchObject();
+                $drupal_user = user_load_by_mail($stripe_customer->email);
+                if(!$drupal_user) {
+                    continue;
+                    // TODO: log this as an error
+                }
 
-                $fields = array('uid' => $drupal_user->uid,
+                $fields = array('uid' => $drupal_user->id(),
                     'plan' => $subscriber->plan->id,
                     'stripe_cid' => $subscriber->customer,
                     'status' => $subscriber->status,
@@ -70,7 +73,15 @@ class StriperSubscriptionSync extends ControllerBase {
                         ->fields(array('status' => $subscriber->status, 'plan_end' => $subscriber->current_period_end))
                         ->condition('uid', $customer_plan->uid)
                         ->execute();
-                    $updated++;
+
+                    // todo: figure out how to get the role...
+                    $role = \Drupal\user\Entity\Role::load('stripe_subscriber');
+                    \Drupal::logger('striper')->notice(print_r($role, 1));
+                    $user = \Drupal\user\Entity\User::load($customer_plan->uid);
+                    if(!is_null($user)) {
+                        $user->addRole($role);
+                        $updated++;
+                    }
                 }
             }
         }

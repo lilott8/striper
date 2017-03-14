@@ -24,6 +24,9 @@ class StriperPlanSyncController extends ControllerBase {
         \Stripe\Stripe::setApiKey($this->stripe->secretKey);
     }
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     public function sync() {
         $plans = \Stripe\Plan::all();
 

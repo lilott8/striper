@@ -6,12 +6,12 @@
  * Time: 4:07 PM
  */
 
-namespace Drupal\striper\Controller;
+namespace Drupal\striper\Controller\App;
 
 
 use Drupal\Core\Controller\ControllerBase;
 
-class StriperAppSubscriptions extends ControllerBase {
+class StriperSubscriptions extends ControllerBase {
 
 public function listPlans() {
 

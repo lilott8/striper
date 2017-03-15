@@ -9,3 +9,18 @@ use \Drupal\striper\Entity\StriperPlanEntity;
 function striper_plans_load($id) {
     return StriperPlanEntity::load($id);
 }
+
+/**
+ * Implements hook_js_alter().
+ */
+function striper_js_alter(&$javascript, \Drupal\Core\Asset\AttachedAssetsInterface $assets) {
+
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function striper_uninstall() {
+    $role = \Drupal\user\Entity\Role::load('stripe_subscriber');
+    $role->delete();
+}

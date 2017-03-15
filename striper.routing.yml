@@ -9,7 +9,7 @@ striper.config.keys:
 striper.config.subscriptions:
   path: '/admin/config/striper/subscriptions'
   defaults:
-    _controller: '\Drupal\striper\Controller\StriperSubscriptionList::listUsers'
+    _controller: '\Drupal\striper\Controller\Config\StriperSubscriptionList::listUsers'
     _title: 'Striper Subscriptions'
   requirements:
     _permission: 'administer site'
@@ -77,3 +77,9 @@ striper.app.webhook:
     _controller: '\Drupal\striper\Controller\StriperWebhookResponderController::subscriptions'
     requirements:
     _permission: 'administer site'
+
+striper.app.subscriptions.list:
+  path: '/striper/plans'
+  defaults:
+    _title: 'Available Plans'
+    _controller: '\Drupal\striper\Controller\StriperAppSubscriptions::listPlans'

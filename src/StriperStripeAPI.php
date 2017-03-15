@@ -27,4 +27,8 @@ class StriperStripeAPI {
 
         \Stripe\Stripe::setApiKey($this->secretKey);
     }
+
+    public static function getStripeJS() {
+        return "https://checkout.stripe.com/checkout.js";
+    }
 }

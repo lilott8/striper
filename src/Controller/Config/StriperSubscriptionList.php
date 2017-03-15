@@ -6,7 +6,7 @@
  * Time: 10:01 PM
  */
 
-namespace Drupal\striper\Controller;
+namespace Drupal\striper\Controller\Config;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\striper\StriperStripeAPI;

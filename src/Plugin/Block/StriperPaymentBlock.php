@@ -23,7 +23,7 @@ use Drupal\Core\Form\FormStateInterface;
 
 class StriperPaymentBlock extends BlockBase {
     public function build() {
-        // TODO: Implement build() method.
+        // TODO: Implement build() method...
         return array();
     }
 

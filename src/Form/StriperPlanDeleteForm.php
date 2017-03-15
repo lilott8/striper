@@ -36,6 +36,8 @@ class StriperPlanDeleteForm extends EntityConfirmFormBase {
     }
 
     public function submitForm(array &$form, FormStateInterface $form_state) {
+        $role = \Drupal\user\Entity\Role::load("stripe_subscriber");
+
         switch($this->entity->plan_source) {
             case StriperPlanFormBase::SOURCE['user']:
             default:
@@ -45,11 +47,13 @@ class StriperPlanDeleteForm extends EntityConfirmFormBase {
             case StriperPlanFormBase::SOURCE['system']:
             case StriperPlanFormBase::SOURCE['stripe']:
                 $this->entity->plan_active = FALSE;
-                //$this->entity->save();
-                $this->entity->delete();
+                $this->entity->save();
+                //$this->entity->delete();
                 $message = 'Plan %plan is from Stripe, the plan is being deactivated.';
             break;
         }
+        $role->revokePermission($this->entity->id);
+        $role->save();
 
         drupal_set_message($message, array('%plan', $this->entity->plan_name));
 

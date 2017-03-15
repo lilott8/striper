@@ -32,10 +32,13 @@ class StriperSubscriptionSync extends ControllerBase {
 
         $updated = 0;
         $inserted = 0;
+
+        $role = \Drupal\user\Entity\Role::load("stripe_subscriber");
+
         foreach($subscribers['data'] as $subscriber) {
             $customer_plan = \Drupal::database()->query("SELECT * FROM {striper_subscriptions} WHERE stripe_cid = :scid",
                                                ['scid' => $subscriber['customer']])->fetchObject();
-            // we don't have a user in drupal
+            // we don't have a user in stripe
             if(empty($customer_plan)) {
                 /**
                  * If we haven't seen this user before, we need to:
@@ -46,8 +49,9 @@ class StriperSubscriptionSync extends ControllerBase {
 
                 $drupal_user = user_load_by_mail($stripe_customer->email);
                 if(!$drupal_user) {
+                    \Drupal::logger('striper')->error($this->t("User: %mail doesn't exist",
+                                                               array('%email' => $stripe_customer->email)));
                     continue;
-                    // TODO: log this as an error
                 }
 
                 $fields = array('uid' => $drupal_user->id(),
@@ -58,6 +62,11 @@ class StriperSubscriptionSync extends ControllerBase {
                 );
 
                 \Drupal::database()->insert('striper_subscriptions')->fields($fields)->execute();
+                if(!$drupal_user->hasRole($role->id())) {
+                    $drupal_user->addRole($role->id());
+                    $drupal_user->save();
+                }
+
                 $inserted++;
             } else {
                 /**
@@ -80,6 +89,7 @@ class StriperSubscriptionSync extends ControllerBase {
                     $user = \Drupal\user\Entity\User::load($customer_plan->uid);
                     if(!is_null($user)) {
                         $user->addRole($role);
+                        $user->save();
                         $updated++;
                     }
                 }

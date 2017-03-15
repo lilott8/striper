@@ -24,14 +24,16 @@ class StriperPlanSyncController extends ControllerBase {
         \Stripe\Stripe::setApiKey($this->stripe->secretKey);
     }
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     public function sync() {
         $plans = \Stripe\Plan::all();
 
         $syncedPlans = 0;
         foreach($plans['data'] as $plan) {
             $machine_name = str_replace('-', '_', preg_replace('@[^a-z0-9-]+@', '_', strtolower($plan['id'])));
-            \Drupal::logger('stripe_sync')->notice($this->t('%entity', array('%entity'=>\Drupal::entityTypeManager()->getStorage('striper_plan')->load($machine_name))));
-            if(is_null(\Drupal::entityTypeManager()->getStorage('striper_plan')->load($machine_name))) {
+            if (is_null(\Drupal::entityTypeManager()->getStorage('striper_plan')->load($machine_name))) {
                 $entity = \Drupal::entityTypeManager()->getStorage('striper_plan')->create(
                     array(
                         'id' => $machine_name,
@@ -45,11 +47,17 @@ class StriperPlanSyncController extends ControllerBase {
                     )
                 );
                 $result = $entity->save();
-                if($result == SAVED_NEW || $result == SAVED_UPDATED) {
+
+                if ($result == SAVED_NEW || $result == SAVED_UPDATED) {
                     $syncedPlans++;
                 }
+                $role = \Drupal\user\Entity\Role::load("stripe_subscriber");
+                if(!is_null($role)) {
+                    $role->grantPermission($machine_name);
+                    $role->save();
+                }
             } else {
-                \Drupal::logger('stripe_sync')->notice($this->t("%id already exists", array('%id' => $machine_name)));
+                \Drupal::logger('striper')->notice($this->t("%id already exists", array('%id' => $machine_name)));
             }
         }
 

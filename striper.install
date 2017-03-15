@@ -55,9 +55,9 @@ function striper_schema() {
         //'unique keys' => array(
         //    'striper_cid' => array('striper_cid')
         //),
-        'indexes' => array(
-            'striper_cid' => array('striper_cid'),
-        ),
+        //'indexes' => array(
+        //    'striper_cid' => array('striper_cid'),
+        //),
         'foreign keys' => array(
             'user_fk' => array(
                 'table' => 'users',

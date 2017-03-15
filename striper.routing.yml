@@ -2,7 +2,7 @@ striper.config.keys:
   path: '/admin/config/striper/keys'
   defaults:
     _form: '\Drupal\striper\Form\StriperConfigKeyForm'
-    _title: 'Stripe Webhook Settings'
+    _title: 'Striper Settings'
   requirements:
       _permission: 'administer striper'
 

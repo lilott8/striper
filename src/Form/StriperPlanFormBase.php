@@ -156,6 +156,7 @@ class StriperPlanFormBase extends EntityForm {
     public function save(array $form, FormStateInterface $form_state) {
         $plan = $this->getEntity();
         $status = $plan->save();
+        $role = \Drupal\user\Entity\Role::load("stripe_subscriber");
 
         $url = $plan->toUrl();
         $editLink = Link::fromTextAndUrl($this->t('Edit'), $url);
@@ -168,6 +169,13 @@ class StriperPlanFormBase extends EntityForm {
             // If we created a new entity...
             drupal_set_message($this->t('Plan %name has been added.', array('%name' => $plan->planName)));
             $this->logger('contact')->notice('Plan %name has been added.', ['%name' => $plan->planName]);
+        }
+        if($plan->plan_active) {
+            $role->grantPermission($plan->id());
+            $role->save();
+        } else {
+            $role->revokePermission($plan->id());
+            $role->save();
         }
         $form_state->setRedirect('entity.striper_plan.list');
     }

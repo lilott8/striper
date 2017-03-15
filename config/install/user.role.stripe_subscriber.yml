@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies: {  }
+id: stripe_subscriber
+label: 'Stripe Subscriber'
+weight: 3
+is_admin: null
+permissions:
+  - 'view subscriber info'
+  - lifetime

@@ -17,7 +17,7 @@ striper.config.subscriptions:
 striper.config.subscriptions.sync:
   path: '/admin/config/striper/subscriptions/sync'
   defaults:
-    _controller: '\Drupal\striper\Controller\StriperSubscriptionSync::sync'
+    _controller: '\Drupal\striper\Controller\Config\StriperSubscriptionSync::sync'
     _title: 'Sync Subscriptions with Stripe'
   requirements:
     _permission: 'administer site'
@@ -41,7 +41,7 @@ entity.striper_plan.list:
 entity.striper_plan.sync:
   path: '/admin/config/striper/plans/sync'
   defaults:
-    _controller: '\Drupal\striper\Controller\StriperPlanSyncController::sync'
+    _controller: '\Drupal\striper\Controller\Config\StriperPlanSyncController::sync'
     _title: 'Sync with Stripe'
   requirements:
     _permission: 'administer site'
@@ -74,7 +74,7 @@ striper.app.webhook:
   path: 'striper/webhook/subscriptions'
   defaults:
     _title: 'Stripe Webhook Responder'
-    _controller: '\Drupal\striper\Controller\StriperWebhookResponderController::subscriptions'
+    _controller: '\Drupal\striper\Controller\App\StriperWebhookResponderController::subscriptions'
     requirements:
     _permission: 'administer site'
 
@@ -82,4 +82,4 @@ striper.app.subscriptions.list:
   path: '/striper/plans'
   defaults:
     _title: 'Available Plans'
-    _controller: '\Drupal\striper\Controller\StriperAppSubscriptions::listPlans'
+    _controller: '\Drupal\striper\Controller\App\StriperSubscriptions::listPlans'

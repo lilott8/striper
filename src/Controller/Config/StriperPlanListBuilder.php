@@ -6,7 +6,7 @@
  * Time: 1:30 PM
  */
 
-namespace Drupal\striper\Controller;
+namespace Drupal\striper\Controller\Config;
 
 use Drupal\striper;
 use Drupal\Core\Url;

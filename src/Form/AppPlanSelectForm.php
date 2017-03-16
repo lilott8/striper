@@ -11,34 +11,21 @@ namespace Drupal\striper\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\striper\StriperStripeAPI;
+use Drupal\Core\Url;
 
 class AppPlanSelectForm extends FormBase {
     public function getFormId() {
-        // TODO: Implement getFormId() method.
+        return 'app_plan_select_form';
     }
 
     public function buildForm(array $form, FormStateInterface $form_state) {
-        $config = $this->config("striper.striper_plan");
 
-
-        $plans = array();
-
-        $form['plans'] = array(
-            '#title' => $this->t('Select Plan: '),
-            '#type' => 'select',
-            '#options' => $plans,
-            '#required' => TRUE,
-        );
-        $form['submit'] = array(
-            '#type' => 'submit',
-            '#value' => $this->t('Subscribe!'),
-        );
-        return $form;
     }
 
     public function submitForm(array &$form, FormStateInterface $form_state) {
         // TODO: Implement submitForm() method.
+        return $form_state->setRedirectUrl(Url::fromRoute('striper.app.subscriptions.list'));
     }
-
 
 }

@@ -82,6 +82,6 @@ striper.app.subscriptions.list:
   path: '/striper/plans'
   defaults:
     _title: 'Available Plans'
-    _controller: '\Drupal\striper\Controller\App\StriperSubscriptionsPage::viewPlans'
+    _controller: '\Drupal\striper\Controller\App\StriperPlansPage::viewPlans'
   requirements:
     _permission: 'view stripe plans'

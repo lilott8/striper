@@ -4,7 +4,7 @@ striper.config.keys:
     _form: '\Drupal\striper\Form\StriperConfigKeyForm'
     _title: 'Striper Settings'
   requirements:
-      _permission: 'administer striper'
+      _permission: 'administer site'
 
 striper.config.subscriptions:
   path: '/admin/config/striper/subscriptions'
@@ -36,7 +36,7 @@ entity.striper_plan.list:
     _entity_list: 'striper_plan'
     _title: 'Stripe Plans Settings'
   requirements:
-    _permission: 'administer striper'
+    _permission: 'administer site'
 
 entity.striper_plan.sync:
   path: '/admin/config/striper/plans/sync'
@@ -75,11 +75,13 @@ striper.app.webhook:
   defaults:
     _title: 'Stripe Webhook Responder'
     _controller: '\Drupal\striper\Controller\App\StriperWebhookResponderController::subscriptions'
-    requirements:
+  requirements:
     _permission: 'administer site'
 
 striper.app.subscriptions.list:
   path: '/striper/plans'
   defaults:
     _title: 'Available Plans'
-    _controller: '\Drupal\striper\Controller\App\StriperSubscriptions::listPlans'
+    _controller: '\Drupal\striper\Controller\App\StriperSubscriptionsPage::viewPlans'
+  requirements:
+    _permission: 'view stripe plans'

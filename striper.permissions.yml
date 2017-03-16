@@ -14,5 +14,9 @@ access responder:
   title: 'Access Responder Webhook'
   description: 'Allows Stripe to send data here'
 
+view stripe plans:
+  title: 'View available plans'
+  description: 'Allow people to view plans offered by site'
+
 permission_callbacks:
   - Drupal\striper\StriperPermissions::permissions

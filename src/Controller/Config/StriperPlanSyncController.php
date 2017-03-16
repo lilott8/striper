@@ -44,6 +44,7 @@ class StriperPlanSyncController extends ControllerBase {
                         'plan_active' => TRUE,
                         'plan_source' => 'stripe',
                         'plan_stripe_id' => $plan['id'],
+                        'plan_description' => $plan['metadata']['description'],
                     )
                 );
                 $result = $entity->save();

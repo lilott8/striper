@@ -77,7 +77,7 @@ use Drupal\striper\StriperPlanInterface;
  *   admin_permission = "administer site",
  *   handlers = {
  *     "access" = "Drupal\striper\StriperAccessController",
- *     "list_builder" = "Drupal\striper\Controller\StriperPlanListBuilder",
+ *     "list_builder" = "Drupal\striper\Controller\Config\StriperPlanListBuilder",
  *     "form" = {
  *       "add" = "Drupal\striper\Form\StriperPlanAddForm",
  *       "edit" = "Drupal\striper\Form\StriperPlanEditForm",
@@ -153,4 +153,11 @@ class StriperPlanEntity extends ConfigEntityBase implements StriperPlanInterface
      * @var string
      */
     public $planStripeId;
+
+    /**
+     * Description of plan
+     *
+     * @var string
+     */
+    public $planDescription;
 }

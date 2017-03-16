@@ -5,3 +5,4 @@ plan_frequency: '0-0'
 plan_active: true
 plan_source: 'system'
 plan_stripe_id: -1
+plan_description: 'Lifetime subscribers, who pay nothing'

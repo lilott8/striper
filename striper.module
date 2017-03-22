@@ -11,16 +11,38 @@ function striper_plans_load($id) {
 }
 
 /**
- * Implements hook_js_alter().
- */
-function striper_js_alter(&$javascript, \Drupal\Core\Asset\AttachedAssetsInterface $assets) {
-
-}
-
-/**
  * Implements hook_uninstall().
  */
 function striper_uninstall() {
     $role = \Drupal\user\Entity\Role::load('stripe_subscriber');
     $role->delete();
 }
+
+/**
+ * Implements hook_field_widget_info_alter().
+ *
+ * Allows stripe_checkout widget to be applied to number fields.
+ */
+function striper_field_widget_info_alter(array &$info) {
+    $info['number']['field_types'][] = 'striper_checkout';
+}
+
+/**
+ * Implements hook_theme().
+ */
+function striper_theme($existing, $type, $theme, $path) {
+    return array(
+        'striper_checkout' => array(
+            'variables' => array(
+                'action'=> NULL,
+                'anon_url' => NULL,
+                'price' => NULL,
+                'data' => NULL,
+                'logged_in' => NULL,
+                'entity_id' => NULL,
+                'field_name' => NULL,
+            ),
+        ),
+    );
+}
+

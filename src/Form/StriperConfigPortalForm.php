@@ -13,6 +13,19 @@ use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 
 class StriperConfigPortalForm extends ConfigFormBase {
+
+    const STRIPE_MAP = array(
+        'company_name' => 'data-name',
+        'company_image' => 'data-image',
+        'charge_description' => 'data-description',
+        'charge_amount' => 'data-amount',
+        'zip_code' => 'data-zip-code',
+        'billing_address' => 'data-billing-address',
+        'shipping_address' => 'data-shipping-address',
+        'email_address' => 'data-email',
+        'remember_me' => 'data-allow-remember-me',
+    );
+
     protected function getEditableConfigNames() {
         return ['striper.config.portal'];
     }
@@ -44,7 +57,7 @@ class StriperConfigPortalForm extends ConfigFormBase {
         $form['company_image'] = array(
             '#type' => 'checkbox',
             '#title' => $this->t('Company Image'),
-            '#description' => $this->t("Display the company's image."),
+            '#description' => $this->t("Display the company's image.  Automatically pulled from the site"),
             '#default_value' => $config->get('company_image'),
         );
 

@@ -1,0 +1,51 @@
+<p class="price">{{ price }}</p>
+{% if logged_in %}
+    <form action="{{ action }}" method="POST">
+        <script
+                src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                data-key="{{ data.key }}"
+                data-amount="{{ data.amount }}"
+
+                {% if data.company_name %}
+                data-name="{{ data.company_name }}"
+                {% endif %}
+
+                {% if data.charge_description %}
+                data-description="{{ data.charge_description }}"
+                {% endif %}
+
+                {% if data.company_image %}
+                data-image="{{ data.company_image }}"
+                {% endif %}
+
+                {% if data.zip_code %}
+                data-zip-code="{{ data.zip_code }}"
+                {% endif %}
+
+                {% if data.billing_address %}
+                data-billing-address="{{ data.billing_address }}"
+                {% endif %}
+
+                {% if data.shipping_address %}
+                data-shipping-address="{{ data.shipping_address }}"
+                {% endif %}
+
+                {% if data.locale %}
+                data-locale="{{ data.locale }}"
+                {% endif %}
+
+                {% if data.email_address %}
+                data-email="{{ data.email_address }}"
+                {% endif %}
+
+                {% if data.label %}
+                data-label="{{ data.label }}"
+                {% endif %}
+        >
+        </script>
+        <input type="hidden" name="entity_id" value="{{ config }}"/>
+        <input type="hidden" name="field_name" value="{{ field_name }}"/>
+    </form>
+{% else %}
+    <a href="{{ anon_url }}" class="stripe-button button">{{ 'Sign Up Today!'|t }}</a>
+{% endif %}

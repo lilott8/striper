@@ -26,3 +26,6 @@ striper.striper_plan.*:
     plan_description:
       type: string
       label: 'Description'
+    plan_default:
+      type: boolean
+      label: 'Default'

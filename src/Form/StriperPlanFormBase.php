@@ -45,6 +45,7 @@ class StriperPlanFormBase extends EntityForm {
             $frequency = $plan->plan_frequency;
             $name = $plan->plan_name;
             $description = $plan->plan_description;
+            $default = $plan->plan_default;
 
             // only edit plans not in Stripe
             switch($plan->plan_source) {
@@ -73,6 +74,7 @@ class StriperPlanFormBase extends EntityForm {
             $price = '';
             $name = '';
             $description = '';
+            $default = FALSE;
         }
 
         $form['plan_name'] = array(
@@ -136,6 +138,12 @@ class StriperPlanFormBase extends EntityForm {
             '#default_value' => $source,
             '#disabled' => $editable,
             '#attributes' => array('#readonly' =>'readonly'),
+        );
+
+        $form['plan_default'] = array(
+            '#type' => 'checkbox',
+            '#title' => $this->t('Default plan?'),
+            '#default_value' => $default,
         );
 
         return parent::buildForm($form, $form_state);

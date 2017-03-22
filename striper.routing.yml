@@ -78,10 +78,11 @@ striper.app.webhook:
   requirements:
     _permission: 'administer site'
 
-striper.app.subscriptions.list:
-  path: '/striper/plans'
+striper.app.plans.charge:
+  path: '/striper/checkout/charge'
+  methods: [POST]
   defaults:
-    _title: 'Available Plans'
-    _controller: '\Drupal\striper\Controller\App\StriperPlansPage::viewPlans'
+    _controller: '\Drupal\striper\Controller\App\StriperChargeController::charge'
+    _title: 'charge'
   requirements:
-    _permission: 'view stripe plans'
+    _permission: 'access content'

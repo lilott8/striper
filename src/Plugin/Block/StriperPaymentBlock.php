@@ -28,7 +28,6 @@ class StriperPaymentBlock extends BlockBase {
 
     public function build() {
         return \Drupal::formBuilder()->getForm('\Drupal\striper\Form\AppPlanSelectForm');
-        //return NULL;
     }
 
     public function defaultConfiguration() {

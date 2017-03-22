@@ -20,12 +20,18 @@ class AppPlanSelectForm extends FormBase {
     }
 
     public function buildForm(array $form, FormStateInterface $form_state) {
-
+        $form['submit'] = array(
+            '#type' => 'submit',
+            '#value' => $this->t('Sign up Now!'),
+        );
+        return $form;
     }
 
     public function submitForm(array &$form, FormStateInterface $form_state) {
+        // handle user subscription enrollment here!
+        \Drupal::logger('striper')->notice('here');
         // TODO: Implement submitForm() method.
-        return $form_state->setRedirectUrl(Url::fromRoute('striper.app.subscriptions.list'));
+        return $form_state->setRedirectUrl(Url::fromRoute('striper.app.plans.list'));
     }
 
 }

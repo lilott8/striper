@@ -6,3 +6,4 @@ plan_active: true
 plan_source: 'system'
 plan_stripe_id: -1
 plan_description: 'Lifetime subscribers, who pay nothing'
+plan_default: false

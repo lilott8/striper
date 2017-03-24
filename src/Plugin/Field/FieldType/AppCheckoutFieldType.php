@@ -43,22 +43,6 @@ class AppCheckoutFieldType extends EntityReferenceItem {
      */
     public function storageSettingsForm(array &$form, FormStateInterface $form_state, $has_data) {
         return parent::storageSettingsForm($form, $form_state, $has_data);
-        /**
-        $element = parent::storageSettingsForm($form, $form_state, $has_data);
-        $settings = $this->getSettings();
-
-        $element['currency'] = array(
-            '#type' => 'textfield',
-            '#title' => t('Currency'),
-            '#default_value' => $settings['currency'],
-            '#length' => 3,
-            '#size' => 3,
-            '#description' => t('The three character ISO currency code for this price.'),
-            '#disabled' => $has_data,
-        );
-
-        return $element;
-         */
     }
 
 }

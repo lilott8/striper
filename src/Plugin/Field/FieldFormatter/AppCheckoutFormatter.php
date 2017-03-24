@@ -85,13 +85,12 @@ class AppCheckoutFormatter extends EntityReferenceFormatterBase {
         }
 
         foreach ($this->getEntitiesToView($items, $langcode) as $delta => $entity) {
-            //$plan = \Drupal::entityTypeManager()->getStorage('striper_plan')->load($entity->id());
             $plan = \Drupal::entityTypeManager()->getStorage('striper_plan')->load($entity->id());
 
             $elements[$delta] = array(
                 '#theme' => 'striper_checkout',
                 '#price' => $plan->plan_price/ 100,
-                '#entity_id' => $entity->id(),
+                '#plan_name' => $entity->id(),
                 '#logged_in' => \Drupal::currentUser()->isAuthenticated(),
                 '#data' => array(
                     // Price is specified in cents.

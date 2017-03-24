@@ -43,9 +43,9 @@
                 {% endif %}
         >
         </script>
-        <input type="hidden" name="entity_id" value="{{ config }}"/>
-        <input type="hidden" name="field_name" value="{{ field_name }}"/>
+        <input type="hidden" name="plan_name" value="{{ plan_name }}"/>
     </form>
 {% else %}
     <a href="{{ anon_url }}" class="stripe-button button">{{ 'Sign Up Today!'|t }}</a>
+    Something
 {% endif %}

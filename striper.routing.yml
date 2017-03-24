@@ -70,6 +70,26 @@ entity.striper_plan.delete_form:
   requirements:
     _permission: 'administer site'
 
+striper.app.user.subscriptions:
+  path: '/user/{user}/striper'
+  defaults:
+    _title: 'Paid Subscription(s)'
+    _controller: '\Drupal\striper\Controller\App\StriperUserSubscription::viewSubscriptions'
+  options:
+    user: \d+
+  requirements:
+    _user_is_logged_in: 'TRUE'
+
+striper.app.user.subscriptions.cancel:
+  path: '/user/{user}/striper/cancel'
+  defaults:
+    _title: 'Cancel Subscription'
+    _controller: '\Drupal\striper\Controller\App\StriperUserSubscription::cancel'
+  options:
+    user: \d+
+  requirements:
+    _user_is_logged_in: 'TRUE'
+
 striper.app.webhook:
   path: 'striper/webhook/subscriptions'
   defaults:

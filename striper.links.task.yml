@@ -17,3 +17,8 @@ striper.config.payment_portal:
   title: 'Customize Portal'
   route_name: 'striper.config.payment_portal'
   base_route: 'striper.config.keys'
+
+striper.app.user.subscriptions:
+  title: 'Manage Payments'
+  route_name: 'striper.app.user.subscriptions'
+  base_route: 'entity.user.canonical'

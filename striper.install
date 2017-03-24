@@ -70,18 +70,20 @@ function striper_schema() {
 }
 
 /**
- * Allows the storing of what key is to be used for the site
+ * Save the subscription id in the database
  * @param $sandbox
  */
-/*
+
 function striper_update_8001(&$sandbox) {
     $column = array(
-        'type' => 'int',
-        'default' => 1,
+        'type' => 'varchar',
         'not null' => TRUE,
+        'length' => 255,
+        'default' => '',
+        'description' => 'The stripe subscription id'
     );
 
     $schema = Database::getConnection()->schema();
     // table, name of new column, data
-    $schema->addField('striper_recurring_sync', 'use_key', $column);
-}*/
+    $schema->addField('striper_subscriptions', 'stripe_sid', $column);
+}

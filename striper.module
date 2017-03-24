@@ -39,9 +39,14 @@ function striper_theme($existing, $type, $theme, $path) {
                 'price' => NULL,
                 'data' => NULL,
                 'logged_in' => NULL,
-                'entity_id' => NULL,
-                'field_name' => NULL,
+                'plan_name' => NULL,
             ),
+        ),
+        'striper_subscriptions' => array(
+            'variables' => array(
+                'link' => NULL,
+                'subscription' => NULL,
+            )
         ),
     );
 }

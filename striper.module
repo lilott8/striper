@@ -5,16 +5,10 @@
 */
 
 use \Drupal\striper\Entity\StriperPlanEntity;
+use \Drupal\Core\Access\AccessResult;
 
 function striper_plans_load($id) {
     return StriperPlanEntity::load($id);
-}
-
-/**
- * Implements hook_js_alter().
- */
-function striper_js_alter(&$javascript, \Drupal\Core\Asset\AttachedAssetsInterface $assets) {
-
 }
 
 /**
@@ -24,3 +18,53 @@ function striper_uninstall() {
     $role = \Drupal\user\Entity\Role::load('stripe_subscriber');
     $role->delete();
 }
+
+/**
+ * Implements hook_field_widget_info_alter().
+ *
+ * Allows stripe_checkout widget to be applied to number fields.
+ */
+function striper_field_widget_info_alter(array &$info) {
+    $info['number']['field_types'][] = 'striper_checkout';
+}
+
+/**
+ * Implements hook_theme().
+ */
+function striper_theme($existing, $type, $theme, $path) {
+    return array(
+        'striper_checkout' => array(
+            'variables' => array(
+                'action'=> NULL,
+                'anon_url' => NULL,
+                'price' => NULL,
+                'data' => NULL,
+                'logged_in' => NULL,
+                'plan_name' => NULL,
+            ),
+        ),
+        'striper_subscriptions' => array(
+            'variables' => array(
+                'link' => NULL,
+                'subscription' => NULL,
+            )
+        ),
+    );
+}
+
+/**
+ * Implements hook_entity_field_access().
+ */
+/*
+function striper_entity_field_access($operation, \Drupal\Core\Field\FieldDefinitionInterface $field_definition, \Drupal\Core\Session\AccountInterface $account, \Drupal\Core\Field\FieldItemListInterface $items = NULL) {
+    return AccessResult::allowed();
+    if ($field_definition->getType() != 'plan_price') {
+        return AccessResult::neutral();
+    }
+
+    if($operation != 'view' && $account->isAnonymous() && $field_definition->getType() == 'plan_price') {
+        //return AccessResult::allowed();
+    }
+    return AccessResult::neutral();
+}*/
+

@@ -77,7 +77,7 @@ use Drupal\striper\StriperPlanInterface;
  *   admin_permission = "administer site",
  *   handlers = {
  *     "access" = "Drupal\striper\StriperAccessController",
- *     "list_builder" = "Drupal\striper\Controller\StriperPlanListBuilder",
+ *     "list_builder" = "Drupal\striper\Controller\Config\StriperPlanListBuilder",
  *     "form" = {
  *       "add" = "Drupal\striper\Form\StriperPlanAddForm",
  *       "edit" = "Drupal\striper\Form\StriperPlanEditForm",
@@ -117,40 +117,54 @@ class StriperPlanEntity extends ConfigEntityBase implements StriperPlanInterface
      *
      * @var string
      */
-    public $planName;
+    public $plan_name;
 
     /**
      * Cost of plan
      *
      * @var integer
      */
-    public $planPrice;
+    public $plan_price;
 
     /**
      * The frequency with which the plan is charged
      *
      * @var string
      */
-    public $planFrequency;
+    public $plan_frequency;
 
     /**
      * Denotes if the plan is active
      *
      * @var boolean
      */
-    public $planActive;
+    public $plan_active;
 
     /**
      * Is this a custom plan -- to be used for free subscriptions
      *
      * @var string
      */
-    public $planSource;
+    public $plan_source;
 
     /**
      * Stripe Plan ID
      *
      * @var string
      */
-    public $planStripeId;
+    public $plan_stripeid;
+
+    /**
+     * Description of plan
+     *
+     * @var string
+     */
+    public $plan_description;
+
+    /**
+     * Default plan to show users
+     *
+     * @var boolean
+     */
+    public $plan_default;
 }

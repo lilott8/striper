@@ -1,9 +1,15 @@
 striper.stripejs:
   remote: https://checkout.stripe.com/checkout.js
-  #version: unknown
+  version: unknown
   license:
     name: unknown
     url: unknown
     gpl-compatible: unknown
   js:
     https://checkout.stripe.com/checkout.js
+
+striper.checkout:
+  js:
+    js/checkout.js: {}
+  dependencies:
+    - core/jquery

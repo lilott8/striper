@@ -31,4 +31,13 @@ class StriperStripeAPI {
     public static function getStripeJS() {
         return "https://checkout.stripe.com/checkout.js";
     }
+
+    public static function formatCost($amount, $dollar=FALSE) {
+        $cost = floatval(intval($amount) / 100);
+
+        if($dollar) {
+            $cost = "\${$cost}";
+        }
+        return $cost;
+    }
 }

@@ -4,8 +4,8 @@ administer striper:
   restrict access: true
 
 view subscriber info:
-  title: 'View subscriber only info'
-  description: 'Allow users to view subscriber only information'
+  title: 'View subscriber info'
+  description: 'Allow users to view subscriber information'
 
 view own subscription:
   title: 'View own subscription status'
@@ -13,6 +13,10 @@ view own subscription:
 access responder:
   title: 'Access Responder Webhook'
   description: 'Allows Stripe to send data here'
+
+view stripe plans:
+  title: 'View available plans'
+  description: 'Allow people to view plans offered by site'
 
 permission_callbacks:
   - Drupal\striper\StriperPermissions::permissions

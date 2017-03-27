@@ -4,7 +4,7 @@ striper.config.keys:
     _form: '\Drupal\striper\Form\StriperConfigKeyForm'
     _title: 'Striper Settings'
   requirements:
-      _permission: 'administer striper'
+      _permission: 'administer site'
 
 striper.config.subscriptions:
   path: '/admin/config/striper/subscriptions'
@@ -36,7 +36,7 @@ entity.striper_plan.list:
     _entity_list: 'striper_plan'
     _title: 'Stripe Plans Settings'
   requirements:
-    _permission: 'administer striper'
+    _permission: 'administer site'
 
 entity.striper_plan.sync:
   path: '/admin/config/striper/plans/sync'
@@ -70,16 +70,39 @@ entity.striper_plan.delete_form:
   requirements:
     _permission: 'administer site'
 
+striper.app.user.subscriptions:
+  path: '/user/{user}/striper'
+  defaults:
+    _title: 'Paid Subscription(s)'
+    _controller: '\Drupal\striper\Controller\App\StriperUserSubscription::viewSubscriptions'
+  options:
+    user: \d+
+  requirements:
+    _user_is_logged_in: 'TRUE'
+
+striper.app.user.subscriptions.cancel:
+  path: '/user/{user}/striper/cancel'
+  defaults:
+    _title: 'Cancel Subscription'
+    _controller: '\Drupal\striper\Controller\App\StriperUserSubscription::cancel'
+  options:
+    user: \d+
+  requirements:
+    _user_is_logged_in: 'TRUE'
+
 striper.app.webhook:
   path: 'striper/webhook/subscriptions'
   defaults:
     _title: 'Stripe Webhook Responder'
     _controller: '\Drupal\striper\Controller\App\StriperWebhookResponderController::subscriptions'
-    requirements:
+  requirements:
     _permission: 'administer site'
 
-striper.app.subscriptions.list:
-  path: '/striper/plans'
+striper.app.plans.charge:
+  path: '/striper/checkout/charge'
+  methods: [POST]
   defaults:
-    _title: 'Available Plans'
-    _controller: '\Drupal\striper\Controller\App\StriperSubscriptions::listPlans'
+    _controller: '\Drupal\striper\Controller\App\StriperChargeController::charge'
+    _title: 'charge'
+  requirements:
+    _permission: 'access content'

@@ -4,8 +4,8 @@ administer striper:
   restrict access: true
 
 view subscriber info:
-  title: 'View subscriber only info'
-  description: 'Allow users to view subscriber only information'
+  title: 'View subscriber info'
+  description: 'Allow users to view subscriber information'
 
 view own subscription:
   title: 'View own subscription status'

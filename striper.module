@@ -5,6 +5,7 @@
 */
 
 use \Drupal\striper\Entity\StriperPlanEntity;
+use \Drupal\Core\Access\AccessResult;
 
 function striper_plans_load($id) {
     return StriperPlanEntity::load($id);
@@ -50,4 +51,20 @@ function striper_theme($existing, $type, $theme, $path) {
         ),
     );
 }
+
+/**
+ * Implements hook_entity_field_access().
+ */
+/*
+function striper_entity_field_access($operation, \Drupal\Core\Field\FieldDefinitionInterface $field_definition, \Drupal\Core\Session\AccountInterface $account, \Drupal\Core\Field\FieldItemListInterface $items = NULL) {
+    return AccessResult::allowed();
+    if ($field_definition->getType() != 'plan_price') {
+        return AccessResult::neutral();
+    }
+
+    if($operation != 'view' && $account->isAnonymous() && $field_definition->getType() == 'plan_price') {
+        //return AccessResult::allowed();
+    }
+    return AccessResult::neutral();
+}*/
 

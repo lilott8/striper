@@ -20,7 +20,7 @@ class StriperAccessController extends EntityAccessControlHandler {
         if((int)$account->id() === 1) {
             return AccessResult::allowed();
         }
-        
+
         if(($operation == 'update' || $operation == 'delete') && $account->hasPermission('administer striper')) {
             return AccessResult::allowed();
         }

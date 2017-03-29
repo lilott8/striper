@@ -22,18 +22,17 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Drupal\Core\Field\Plugin\Field\FieldFormatter\EntityReferenceFormatterBase;
 
 /**
- * Plugin implementation of the 'striper_checkout_formatter' formatter.
+ * Plugin implementation of the 'striper_plan_formatter' formatter.
  *
  * @FieldFormatter(
- *   id = "striper_checkout_formatter",
- *   label = @Translation("Striper checkout"),
+ *   id = "striper_plan_formatter",
+ *   label = @Translation("Striper Plan"),
  *   field_types = {
  *     "entity_reference"
  *   }
  * )
  */
-class AppCheckoutFormatter extends EntityReferenceFormatterBase {
-//class AppCheckoutFormatter extends NumericFormatterBase {
+class AppPlanFormatter extends EntityReferenceFormatterBase {
 
     protected $stripeApi;
 
@@ -88,7 +87,7 @@ class AppCheckoutFormatter extends EntityReferenceFormatterBase {
             $plan = \Drupal::entityTypeManager()->getStorage('striper_plan')->load($entity->id());
 
             $elements[$delta] = array(
-                '#theme' => 'striper_checkout',
+                '#theme' => 'striper_plan_format',
                 '#price' => $plan->plan_price/ 100,
                 '#plan_name' => $entity->id(),
                 '#logged_in' => \Drupal::currentUser()->isAuthenticated(),

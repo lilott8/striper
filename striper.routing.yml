@@ -91,12 +91,13 @@ striper.app.user.subscriptions.cancel:
     _user_is_logged_in: 'TRUE'
 
 striper.app.webhook:
-  path: 'striper/webhook/subscriptions'
+  path: 'striper/webhook'
+  methods: [POST]
   defaults:
     _title: 'Stripe Webhook Responder'
-    _controller: '\Drupal\striper\Controller\App\StriperWebhookResponderController::subscriptions'
+    _controller: '\Drupal\striper\Controller\App\WebhookController::handler'
   requirements:
-    _permission: 'administer site'
+    _permission: 'access content'
 
 striper.app.plans.charge:
   path: '/striper/checkout/charge'

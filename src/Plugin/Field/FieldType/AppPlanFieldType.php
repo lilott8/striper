@@ -14,28 +14,26 @@ use Drupal\Core\Field\Plugin\Field\FieldType\EntityReferenceItem;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Plugin implementation of the 'striper_checkout_field_type' field type.
+ * Plugin implementation of the 'striper_plan_field_type' field type.
  *
  * @FieldType(
- *   id = "striper_checkout",
+ *   id = "striper_plan",
  *   label = @Translation("Striper Plan"),
- *   description = @Translation("Striper Checkout field. References a striper_plan config entity."),
+ *   description = @Translation("Striper Plan field. References a striper_plan config entity."),
  *   category = @Translation("Reference"),
  *   default_widget = "entity_reference_autocomplete",
  *   list_class = "\Drupal\Core\Field\EntityReferenceFieldItemList",
- *   default_formatter = "striper_checkout_formatter"
+ *   default_formatter = "striper_plan_formatter"
  * )
  */
 
-class AppCheckoutFieldType extends EntityReferenceItem {
+class AppPlanFieldType extends EntityReferenceItem {
 
     /**
      * {@inheritdoc}
      */
     public static function defaultStorageSettings() {
-        return array(
-
-            ) + parent::defaultStorageSettings();
+        return array() + parent::defaultStorageSettings();
     }
 
     /**

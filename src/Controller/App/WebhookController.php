@@ -50,11 +50,6 @@ class WebhookController extends ControllerBase {
             \Drupal::logger('striper')->warning($e->getMessage());
         }
 
-        //$event = \Stripe\Event::retrieve();
-        //switch($event) {
-
-        //}
-
         return array();
     }
 }

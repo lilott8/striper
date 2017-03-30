@@ -32,7 +32,6 @@ class StriperConfigKeyForm extends ConfigFormBase {
     }
 
     public function buildForm(array $form, FormStateInterface $form_state) {
-
         $config = \Drupal::config('striper.config');
 
         $form['striper_test_keys'] = array(

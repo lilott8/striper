@@ -182,12 +182,12 @@ class StriperPlanFormBase extends EntityForm {
 
         if($status == SAVED_UPDATED) {
             // If we edited an existing entity...
-            drupal_set_message($this->t('Plan %name has been updated.', array('%name' => $plan->planName)));
-            $this->logger('contact')->notice('Plan %name has been updated.', ['%name' => $plan->planName]);
+            drupal_set_message($this->t('Plan %name has been updated.', array('%name' => $plan->plan_name)));
+            $this->logger('striper')->notice('Plan %name has been updated.', ['%name' => $plan->plan_name]);
         } else {
             // If we created a new entity...
-            drupal_set_message($this->t('Plan %name has been added.', array('%name' => $plan->planName)));
-            $this->logger('contact')->notice('Plan %name has been added.', ['%name' => $plan->planName]);
+            drupal_set_message($this->t('Plan %name has been added.', array('%name' => $plan->plan_name)));
+            $this->logger('striper')->notice('Plan %name has been added.', ['%name' => $plan->plan_name]);
         }
         if($plan->plan_active) {
             $role->grantPermission($plan->id());

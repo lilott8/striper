@@ -67,57 +67,147 @@ class WebhookController extends ControllerBase {
         return array();
     }
 
+    /**
+     * @param $event json object
+     *
+     *
+     */
     private function chargefailed($event) {
 
     }
 
+    /**
+     * @param $event json object
+     *
+     *
+     */
     private function chargepending($event) {
 
     }
 
+    /**
+     * @param $event json object
+     *
+     *
+     */
     private function chargerefunded($event) {
 
     }
 
+    /**
+     * @param $event json object
+     *
+     *
+     */
     private function chargeupdated($event) {
 
     }
 
+    /**
+     * @param $event json object
+     *
+     *
+     */
     private function chargesucceeded($event) {
 
     }
 
+    /**
+     * @param $event json object
+     *
+     *
+     */
     private function customercreated($event) {
         
     }
 
+    /**
+     * @param $event json object
+     *
+     *
+     */
     private function customerdeleted($event) {
 
     }
 
+    /**
+     * @param $event json object
+     *
+     *
+     */
     private function customerupdated($event) {
 
     }
 
+    /**
+     * @param $event json object
+     *
+     * This retrieves the user by email and
+     * inserts a customer record in stripers db
+     */
     private function customersubscriptioncreated($event) {
+        $stiper_user_id = $event->data->object->customer;
+        // check the local db first -- it's less expensive
+        $stripe_user = $this->db->query('SELECT * FROM {striper_subscriptions} s WHERE s.stripe_cid = %id',
+                                 array('%id' => $stiper_user_id))->fetchObject();
+        if(is_null($stripe_user)) {
+            $stripe_user = \Stripe\Customer::retrieve($stiper_user_id);
+        }
 
+        $user = $this->db->query('SELECT u.uid FROM {useres_field_data} u WHERE u.mail = %email',
+                                 array('%email' => $stripe_user->email))->fetchObject();
+
+        if(is_null($user)) {
+            \Drupal::logger('striper')->warning(t('Could not find user with email: %e',
+                                                  array('%e' => $stripe_user->email)));
+            return;
+        }
+
+        // todo: insert the newly created subscription here
     }
 
+    /**
+     * @param $event json object
+     *
+     * This retrieves the user record by customer id from
+     * the striper tables, then invalidates the user's account
+     * could also send them an email, if we want in the future
+     */
     private function customersubscriptiondeleted($event) {
 
     }
 
+    /**
+     * @param $event json object
+     *
+     * placeholder for right now
+     */
     private function customersubscriptiontrial_will_end($event) {
 
     }
 
+    /**
+     * @param $event json object
+     *
+     * This retrieves the user record by customer id from
+     * the striper tables, then updates the end time of the
+     * users account
+     */
     private function customersubscriptionupdated($event) {
 
     }
 
+    /**
+     * @param $event json object
+     *
+     * creates a plan in the configs to be exposed to
+     * the user for subscription, if we have the record
+     * already, we update it
+     */
     private function plancreated($event) {
         $plan = \Drupal::config("striper.striper_plan.{$event->data->object->id}");
         if(!is_null($plan)) {
+            $this->planupdated($event);
         } else {
             $values = array(
                 'id' => $event->data->object->id,
@@ -134,9 +224,14 @@ class WebhookController extends ControllerBase {
             $plan = StriperPlanEntity::create($values);
             $plan->save();
         }
-        $this->planupdated($event);
     }
 
+    /**
+     * @param $event json object
+     *
+     * updates an existing plan.  If we don't have one,
+     * we create it.
+     */
     private function planupdated($event) {
         $plan = \Drupal::configFactory()->getEditable("striper.striper_plan.{$event->data->object->id}");
         if(!is_null($plan)) {
@@ -154,15 +249,22 @@ class WebhookController extends ControllerBase {
             $plan->save();
             drupal_set_message($this->t('Plan %name has been updated.', array('%name' => $plan->get('plan_name'))));
             \Drupal::logger('striper')->notice('Plan %name has been updated.', ['%name' => $plan->get('plan_name')]);
+        } else {
+            $this->plancreated($event);
         }
     }
 
+    /**
+     * @param $event json object
+     *
+     * deletes a config from drupal
+     */
     private function plandeleted($event) {
         $plan = \Drupal::configFactory()->getEditable("striper.striper_plan.{$event->data->object->id}");
         if(!is_null($plan)) {
             $plan->delete();
-            drupal_set_message($this->t('Plan %name has been updated.', array('%name' => $plan->get('plan_name'))));
-            \Drupal::logger('striper')->notice('Plan %name has been updated.', ['%name' => $plan->get('plan_name')]);
+            drupal_set_message($this->t('Plan %name has been deleted.', array('%name' => $plan->get('plan_name'))));
+            \Drupal::logger('striper')->notice('Plan %name has been deleted.', ['%name' => $plan->get('plan_name')]);
         }
 
     }

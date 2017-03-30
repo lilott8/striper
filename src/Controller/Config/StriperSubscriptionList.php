@@ -30,15 +30,6 @@ class StriperSubscriptionList extends ControllerBase {
     }
 
     public function listUsers() {
-
-        $subscriptions = \Drupal::database()
-            ->select('striper_subscriptions', 's')
-            ->fields('u', array('uid'))
-            ->fields('s', array('*'))
-            ->join('users_field_data', 'u', 's.uid = u.uid');
-
-        //var_dump($subscriptions);
-
         $subscriptions = \Drupal::database()->query("SELECT u.uid, u.mail, s.stripe_cid, s.status, " .
                                                     "s.plan, u.name, s.plan_end " .
                                                     "FROM {striper_subscriptions} s JOIN {users_field_data} u " .

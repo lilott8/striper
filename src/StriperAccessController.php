@@ -29,6 +29,6 @@ class StriperAccessController extends EntityAccessControlHandler {
             return AccessResult::allowed();
         }
 
-        return AccessResult::forbidden();
+        return AccessResult::allowed();
     }
 }

@@ -28,8 +28,8 @@ class StriperChargeController extends ControllerBase {
     /**
      * {@inheritdoc}
      */
-    public function __construct(striper\StriperStripeAPI $striperApi) {
-        $this->striperApi = $striperApi;
+    public function __construct() {
+        $this->striperApi = new striper\StriperStripeAPI();
     }
 
     /**
@@ -72,9 +72,16 @@ class StriperChargeController extends ControllerBase {
             if ($charge->paid === TRUE) {
                 drupal_set_message(t("Thank you. Your payment has been processed."));
 
+                \Stripe\Subscription::create(
+                    array(
+                        "customer" => $charge->customer,
+                        "plan" => $request->get('plan_name'),
+                    )
+                );
+
                 // At this point a Stripe webhook should make a request to the stripe_api.webhook route, which will dispatch an event
                 // to which event subscribers can react.
-                $this->getLogger('stripe_checkout.logger')->info(t("Successfully processed Stripe charge. This should have triggered a Stripe webhook. \nsubmitted data:@data", [
+                \Drupal::logger('striper')->info(t("Successfully processed Stripe charge. This should have triggered a Stripe webhook. \nsubmitted data:@data", [
                     '@data' => $request->getContent(),
                 ]));
 
@@ -85,27 +92,30 @@ class StriperChargeController extends ControllerBase {
                     $user,
                 ]);
 
-                return $this->redirect('entity.node.canonical', array('node' => $entity_id));
+                //return $this->redirect('striper.app.user.subscriptions');
+                return array();
             }
             else {
                 drupal_set_message(t("Payment failed."), 'error');
 
-                $this->getLogger('stripe_checkout.logger')->error(t("Could not complete Stripe charge. \nsubmitted data:@data", [
+                \Drupal::logger('striper')->error(t("Could not complete Stripe charge. \nsubmitted data:@data", [
                     '@data' => $request->getContent(),
                 ]));
 
-                return new Response(NULL, Response::HTTP_FORBIDDEN);
+                //return $this->redirect('striper.app.user.subscriptions');
+                return array();
             }
 
         }
         catch (\Exception $e) {
             drupal_set_message(t("Payment failed."), 'error');
 
-            $this->getLogger('striper.logger')->error(t("Could not complete Stripe charge, error:\n@error\nsubmitted data:@data", [
+            \Drupal::logger('striper')->error(t("Could not complete Stripe charge, error:\n@error\nsubmitted data:@data", [
                 '@data' => $request->getContent(),
                 '@error' => $e->getMessage(),
             ]));
-            return new Response(NULL, Response::HTTP_FORBIDDEN);
+            //return $this->redirect('striper.app.user.subscriptions');
+            return array();
         }
     }
 

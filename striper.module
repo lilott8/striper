@@ -7,6 +7,8 @@
 use \Drupal\striper\Entity\StriperPlanEntity;
 use \Drupal\Core\Access\AccessResult;
 
+define('SUBSCRIPTIONS', 'striper_subscriptions');
+
 function striper_plans_load($id) {
     return StriperPlanEntity::load($id);
 }

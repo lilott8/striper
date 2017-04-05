@@ -42,32 +42,31 @@ class StriperChargeController extends ControllerBase {
 
         try {
             $token = $request->get('stripeToken');
-            $entity_id = $request->get('entity_id');
-            $field_name = $request->get('field_name');
+            $config = \Drupal::configFactory()->get('striper.striper_plan.'.$request->get('plan_name'));
 
-            if (!$token || !$entity_id || !$field_name) {
+            if (!$token || is_null($config) || empty($config)) {
                 throw new \Exception("Required data is missing!");
             }
 
-            // Load the price from the node that was purchased.
-            $node = $this->entityTypeManager()->getStorage('node')->load($entity_id);
-            $amount = $node->$field_name->value;
-            $field_settings = $node->$field_name->getSettings();
-            $currency = $field_settings['currency'];
+            // Load the price from the config that was purchased.
+            $amount = $config->get('plan_price');
+
             $user = \Drupal::currentUser()->getAccount();
 
             $charge = Charge::create(array(
-                                         // Convert to cents.
-                                         "amount" => $amount * 100,
+                                         // This is stored in cents in config.
+                                         "amount" => $amount,
                                          "source" => $token,
-                                         "description" => $this->t('Purchase of @title', ['@title' => $node->label()]),
-                                         'email' => $user->getEmail(),
-                                         'currency' => $currency,
+                                         "description" => $this->t('Purchase of @title', ['@title' => $config->get('plan_name')]),
+                                         'currency' => 'usd',
                                          "metadata" => [
-                                             'entity_id' => $entity_id,
+                                             'plan' => $request->get('plan_name'),
+                                             'email' => $user->getEmail(),
                                              'uid' => $user->id(),
                                          ],
                                      ));
+
+            \Drupal::logger('striper')->warning(striper\StriperDebug::vd($charge));
 
             if ($charge->paid === TRUE) {
                 drupal_set_message(t("Thank you. Your payment has been processed."));
@@ -88,7 +87,7 @@ class StriperChargeController extends ControllerBase {
                 // In addition to the webhook, we fire a traditional Drupal hook to permit other modules to respond to this event instantaneously.
                 $this->moduleHandler()->invokeAll('stripe_checkout_charge_succeeded', [
                     $charge,
-                    $node,
+                    $config,
                     $user,
                 ]);
 
@@ -98,7 +97,7 @@ class StriperChargeController extends ControllerBase {
             else {
                 drupal_set_message(t("Payment failed."), 'error');
 
-                \Drupal::logger('striper')->error(t("Could not complete Stripe charge. \nsubmitted data:@data", [
+                \Drupal::logger('striper')->error(t("The charge was incomplete. \nsubmitted data:@data", [
                     '@data' => $request->getContent(),
                 ]));
 

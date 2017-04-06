@@ -141,7 +141,7 @@ class WebhookController extends ControllerBase {
         } else {
             $user = \Drupal\user\Entity\User::load($stripe_user->uid);
 
-            $user->removeRole();
+            $user->removeRole(\Drupal\user\Entity\Role::load('stripe_subscriber')->id());
             $user->save();
         }
     }
@@ -180,7 +180,7 @@ class WebhookController extends ControllerBase {
             $stripe_user = \Stripe\Customer::retrieve($striper_user_id);
         }
 
-        $user = $this->db->query('SELECT u.uid, u.uid FROM {useres_field_data} u WHERE u.mail = :email',
+        $user = $this->db->query('SELECT u.uid, u.uid FROM {users_field_data} u WHERE u.mail = :email',
                                  array(':email' => $stripe_user->email))->fetchObject();
 
         $user = \Drupal\user\Entity\User::load($user->uid);
@@ -225,6 +225,14 @@ class WebhookController extends ControllerBase {
 
         $user = \Drupal\user\Entity\User::load($stripe_user->uid);
         $role = \Drupal\user\Entity\Role::load('stripe_subscriber');
+
+
+        $fields = array(
+            'status' => 'inactive',
+            'plan' => 'none',
+            'plan_end' => -1,
+        );
+        $this->db->update('striper_subscriptions')->fields($fields)->execute();
 
         $user->removeRole($role->id());
         $user->save();

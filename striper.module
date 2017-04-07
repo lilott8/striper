@@ -9,6 +9,12 @@ use \Drupal\Core\Access\AccessResult;
 
 define('SUBSCRIPTIONS', 'striper_subscriptions');
 
+const SUBSCRIPTION_STATES = array(
+    'active' => 'active',
+    'cancelled' => 'cancelled',
+    'ended' => 'ended',
+);
+
 function striper_plans_load($id) {
     return StriperPlanEntity::load($id);
 }

@@ -103,26 +103,18 @@ class StriperChargeController extends ControllerBase {
             } else {
                 $fields = array(
                     'plan' => $config->get('id'),
-                    'status' => 'active',
+                    'status' => SUBSCRIPTION_STATES['active'],
                     'plan_end' => $subscription->current_period_end,
                 );
                 $this->db->update('striper_subscriptions')->fields($fields)
                     ->where('uid = :uid', array(':uid' => $user->id()))->execute();
             }
 
-            //$charge = \Stripe\Charge::create(
-            //    array(
-
-            //    )
-            //);
-
             drupal_set_message(t("Thank you. Your payment has been processed."));
 
             // At this point a Stripe webhook should make a request to the stripe_api.webhook route, which will dispatch an event
             // to which event subscribers can react.
-            \Drupal::logger('striper')->info(t("Successfully processed Stripe charge. This should have triggered a Stripe webhook. \nsubmitted data:@data", [
-                '@data' => $request->getContent(),
-            ]));
+            \Drupal::logger('striper')->info(t("Successfully processed Stripe charge. This should have triggered a Stripe webhook."));
 
             // In addition to the webhook, we fire a traditional Drupal hook to permit other modules to respond to this event instantaneously.
             $this->moduleHandler()->invokeAll('stripe_checkout_charge_succeeded', [
@@ -132,29 +124,16 @@ class StriperChargeController extends ControllerBase {
             ]);
 
             //return $this->redirect('striper.app.user.subscriptions');
-            //return array();
-            //}
-            /*else {
-                drupal_set_message(t("Payment failed."), 'error');
-
-                \Drupal::logger('striper')->error(t("The charge was incomplete. \nsubmitted data:@data", [
-                    '@data' => $request->getContent(),
-                ]));
-
-                //return $this->redirect('striper.app.user.subscriptions');
-                return array();
-            }*/
             return array();
         }
         catch (\Exception $e) {
-            drupal_set_message(t("Payment failed."), 'error');
+            drupal_set_message(t("There was a problem processing your payment."), 'error');
 
             \Drupal::logger('striper')->error(t("Could not complete Stripe charge, error:\n@error\nsubmitted data:@data", [
                 '@data' => $request->getContent(),
                 '@error' => $e->getMessage(),
             ]));
-            //return $this->redirect('striper.app.user.subscriptions');
-            return array();
+            return $this->redirect('striper.app.user.subscriptions');
         }
     }
 

@@ -45,7 +45,6 @@ class StriperConfigPortalForm extends ConfigFormBase {
     public function buildForm(array $form, FormStateInterface $form_state) {
 
         $config = \Drupal::config('striper.config.portal');
-        \Drupal::logger('striper')->notice('in form: ' . $config->get('company_name'));
 
         $form['company_name'] = array(
             '#type' => 'checkbox',

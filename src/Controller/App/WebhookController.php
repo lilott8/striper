@@ -42,7 +42,7 @@ class WebhookController extends ControllerBase {
      * @return int
      */
     public function handler(Request $request) {
-        \Drupal::logger('striper')->alert("sanity check %num", array('%num'=> rand(0,100)));
+        //\Drupal::logger('striper')->alert("sanity check %num", array('%num'=> rand(0,100)));
         $contents = $request->getContent();
 
         //\Drupal::logger('striper')->debug($contents);
@@ -56,7 +56,7 @@ class WebhookController extends ControllerBase {
             $event = \GuzzleHttp\json_decode($contents);
             $type = $event->type;
             $function = str_replace('.','', $type);
-            \Drupal::logger('striper')->debug($function);
+            //\Drupal::logger('striper')->debug($function);
             if(method_exists($this, $function)) {
                 $this->$function($event);
             } else {
@@ -120,7 +120,7 @@ class WebhookController extends ControllerBase {
      *
      */
     private function customercreated($event) {
-        
+        \Drupal::logger('striper')->error(t('We have to do something on customer creation'));
     }
 
     /**

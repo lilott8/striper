@@ -12,6 +12,7 @@ use Drupal\Core\Config\Config;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\striper\Entity\StriperPlanEntity;
 use Drupal\striper\Form\StriperPlanFormBase;
+use Drupal\striper\StriperDebug;
 use Drupal\striper\StriperStripeAPI;
 use Stripe\Customer;
 use Stripe\Event;
@@ -24,11 +25,13 @@ class WebhookController extends ControllerBase {
     private $stripe;
     private $db;
     private $readConfig;
+    private $role;
 
     public function __construct() {
         $this->stripe = new StriperStripeAPI();
         $this->db = \Drupal::database();
         $this->readConfig = parent::config('striper');
+        $this->role = \Drupal\user\Entity\Role::load('stripe_subscriber');
     }
 
     /**
@@ -141,7 +144,7 @@ class WebhookController extends ControllerBase {
         } else {
             $user = \Drupal\user\Entity\User::load($stripe_user->uid);
 
-            $user->removeRole(\Drupal\user\Entity\Role::load('stripe_subscriber')->id());
+            $user->removeRole($this->role->id());
             $user->save();
         }
     }
@@ -162,46 +165,36 @@ class WebhookController extends ControllerBase {
      * inserts a customer record in stripers db
      */
     private function customersubscriptioncreated($event) {
-        $striper_user_id = $event->data->object->customer;
+        $stripe_user = $event->data->object->customer;
         // check the local db first -- it's less expensive
-        $stripe_user = $this->db->query('SELECT * FROM {striper_subscriptions} s WHERE s.stripe_cid = :id',
-                                 array(':id' => $striper_user_id))->fetchObject();
+        $striper = $this->db->query('SELECT * FROM {striper_subscriptions} s WHERE s.stripe_cid = :id',
+                                    array(':id' => $stripe_user))->fetchObject();
 
-        // if we have a user, then we check ending dates
-        // if the ending dates are the same, we return,
-        // if not, we can call customer updated...
-        if(!is_null($stripe_user)) {
-            if($stripe_user->plan_end == $event->data->object->current_period_end) {
-                return;
-            } else {
-               $this->customersubscriptionupdated($event, $stripe_user);
-            }
-        } else {
-            $stripe_user = \Stripe\Customer::retrieve($striper_user_id);
+        // if we don't have a record, we need to create one...
+        if(!is_null($striper) || !empty($striper)) {
+            // handle the case for us having the user saved to the database
+            $stripe_user = \Stripe\Customer::retrieve($stripe_user);
+
+            // load a mutable entity of the user
+            $user = \Drupal\user\Entity\User::load($this->db->query('SELECT u.uid FROM {users_field_data} u WHERE u.mail = :email',
+                array(':email' => $stripe_user->email))->fetchObject()->uid);
+
+            $fields = array(
+                'uid' => $user->id(),
+                'plan' => $event->data->object->plan->id,
+                'stripe_cid' => $stripe_user->id,
+                'stripe_sid' => $event->data->object->id,
+                'status' => SUBSCRIPTION_STATES['active'],
+                'plan_end' => $event->data->object->current_period_end,
+            );
+            $this->db->insert('striper_subscriptions')->fields($fields)->execute();
+
+            // add the role to the user
+            $user->addRole($this->role->id());
+            $user->save();
         }
 
-        $user = $this->db->query('SELECT u.uid, u.uid FROM {users_field_data} u WHERE u.mail = :email',
-                                 array(':email' => $stripe_user->email))->fetchObject();
-
-        $user = \Drupal\user\Entity\User::load($user->uid);
-
-        if(is_null($user)) {
-            \Drupal::logger('striper')->warning(t('Could not find user with email: %e',
-                                                  array('%e' => $stripe_user->email)));
-            return;
-        }
-
-        $fields = array('uid' => $user->uid,
-            'plan' => $event->data->object->plan->id,
-            'stripe_cid' => $stripe_user->id,
-            'status' => $event->data->object->status,
-            'plan_end' => $event->data->object->current_period_end
-        );
-
-        \Drupal::database()->insert('striper_subscriptions')->fields($fields)->execute();
-
-        $user->addRole(\Drupal\user\Entity\Role::load('stripe_subscriber')->id());
-        $user->save();
+        return;
     }
 
     /**
@@ -224,17 +217,15 @@ class WebhookController extends ControllerBase {
         }
 
         $user = \Drupal\user\Entity\User::load($stripe_user->uid);
-        $role = \Drupal\user\Entity\Role::load('stripe_subscriber');
-
 
         $fields = array(
-            'status' => 'inactive',
             'plan' => 'none',
             'plan_end' => -1,
+            'status' => SUBSCRIPTION_STATES['inactive'],
         );
-        $this->db->update('striper_subscriptions')->fields($fields)->execute();
+        $this->db->update('striper_subscriptions')->fields($fields)->condition('uid', $user->id())->execute();
 
-        $user->removeRole($role->id());
+        $user->removeRole($this->role->id());
         $user->save();
     }
 
@@ -256,31 +247,29 @@ class WebhookController extends ControllerBase {
      * users account, or cancels their account if it's expired/cancelled
      */
     private function customersubscriptionupdated($event, $stripe_user = NULL) {
-        $striper_user_id = $event->data->object->customer;
-        if(is_null($stripe_user)) {
-            // check the local db first -- it's less expensive
-            $stripe_user = $this->db->query('SELECT * FROM {striper_subscriptions} s WHERE s.stripe_cid = :id',
-                                            array(':id' => $striper_user_id))->fetchObject();
-        }
+        $stripe_user = $this->db->query("SElECT * FROM {striper_subscriptions} s WHERE stripe_cid = :id",
+                                 array(':id' => $event->data->object->customer));
 
-        if(empty($stripe_user) || is_null($stripe_user)) {
-            \Drupal::logger('striper')->warning(t('Subscription Create: Drupal has no user by %cid',
-                                                  array('%cid' => $striper_user_id)));
-            return;
-        }
+        $user = user_load_by_mail($event->data->object->metadata->email);
 
-        $user = \Drupal\user\Entity\User::load($stripe_user->uid);
-        $role = \Drupal\user\Entity\Role::load('stripe_subscriber');
-
-        if($event->data->object->current_period_end <= \Drupal::service('date.formatter')->format(time())) {
-            $user->removeRole($role->id());
-            $user->save();
+        if(is_null($stripe_user) || empty($stripe_user)) {
+            $this->customersubscriptioncreated($event);
         } else {
+            $fields = array(
+                'plan_end' => $event->data->object->current_period_end,
+                'plan' => $event->data->object->plan->id,
+                'status' => SUBSCRIPTION_STATES['active'],
+            );
+
+            $this->db->update('striper_subscriptions')->fields($fields)->condition('uid', $user->id())->execute();
+
+            $role = \Drupal\user\Entity\Role::load('stripe_subscriber');
             if(!$user->hasRole($role->id())) {
-                $user->addRole($role->id());
-                $user->save();
+               $user->addRole($role->id());
+               $user->save();
             }
         }
+        return;
     }
 
     /**

@@ -14,6 +14,7 @@ use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\striper\StriperDebug;
 use Drupal\striper\StriperStripeAPI;
+use Masterminds\HTML5\Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -33,17 +34,17 @@ class StriperUserSubscription extends ControllerBase {
     public function viewSubscriptions(Request $request) {
         // get subscriptions from drupal
         // if subscription, get from Stripe
-            // display a cancel button
+        // display a cancel button
 
         $user_subscription = \Drupal::database()->query("SELECT s.plan_end, s.status " .
-                                                    "FROM {striper_subscriptions} s where s.uid = {:uid}",
-                                                    array(':uid' => $this->currentUser()->id()))->fetchObject();
+                                                        "FROM {striper_subscriptions} s where s.uid = {:uid}",
+                                                        array(':uid' => $this->currentUser()->id()))->fetchObject();
 
         if($user_subscription) {
             $subscription = $this->t('%name, your subscription ends on %date',
                                      array('%name' => $this->currentUser()->getDisplayName(),
                                          '%date' => \Drupal::service('date.formatter')->format($user_subscription->plan_end),
-            ));
+                                     ));
             if($user_subscription->status == SUBSCRIPTION_STATES['active']) {
                 $link = render(Link::createFromRoute($this->t('Cancel Subscription'),
                                                      'striper.app.user.subscriptions.cancel',
@@ -71,17 +72,18 @@ class StriperUserSubscription extends ControllerBase {
         drupal_set_message($this->t("Successfully cancelled subscription"));
 
         $stripe_sid = \Drupal::database()->query("SELECT s.stripe_sid " .
-                                                        "FROM {striper_subscriptions} s where s.uid = {:uid}",
-                                                        array(':uid' => $this->currentUser()->id()))->fetchObject();
+                                                 "FROM {striper_subscriptions} s where s.uid = {:uid}",
+                                                 array(':uid' => $this->currentUser()->id()))->fetchObject();
 
         \Drupal::logger('striper')->warning($stripe_sid->stripe_sid);
 
         $subscription = \Stripe\Subscription::retrieve($stripe_sid->stripe_sid);
         \Drupal::logger('striper')->error(StriperDebug::vd($subscription));
         $subscription->cancel(array('at_period_end' => TRUE));
+        //$subscription->cancel();
 
         \Drupal::database()->query("UPDATE {striper_subscriptions} s SET s.status = {:status} WHERE s.uid = {:uid}",
-            array(':uid' => $this->currentUser()->id(), ':status' => SUBSCRIPTION_STATES['cancelled']));
+                                   array(':uid' => $this->currentUser()->id(), ':status' => SUBSCRIPTION_STATES['cancelled']));
 
         return $this->redirect('striper.app.user.subscriptions', array('user' => $this->currentUser()->id()));
     }
@@ -89,16 +91,37 @@ class StriperUserSubscription extends ControllerBase {
     public function reactivate(Request $request) {
         drupal_set_message($this->t("Successfully reactivated your subscription"));
 
-        $striper_subscription = \Drupal::database()->query("SELECT s.plan, s.plan_end, s.status, s.stripe_sid " .
-                                                           "FROM {striper_subscriptions} s where s.uid = {:uid}",
+        $striper_subscription = \Drupal::database()->query("SELECT * FROM {striper_subscriptions} s where s.uid = {:uid}",
                                                            array(':uid' => $this->currentUser()->id()))->fetchObject();
 
-        $subscription = \Stripe\Subscription::retrieve($striper_subscription->stripe_sid);
-        $subscription->plan = $striper_subscription->plan;
-        $subscription->save();
+        try {
+            $subscription = \Stripe\Subscription::retrieve($striper_subscription->stripe_sid);
+            $subscription->plan = $striper_subscription->plan;
+            $subscription->save();
+            $fields = array(
+                'stripe_sid' => $subscription->id,
+                'status' => SUBSCRIPTION_STATES['active'],
+            );
+        } catch (\Stripe\Error\InvalidRequest $e) {
+            $subscription = \Stripe\Subscription::create(
+                array(
+                    "customer" => $striper_subscription->stripe_cid,
+                    "plan" => $striper_subscription->plan,
+                    "trial_end" => "now",
+                    'metadata' => array(
+                        'plan' => $striper_subscription->plan,
+                        'email' => $this->currentUser()->getEmail(),
+                        'uid' => $this->currentUser()->id(),
+                    )
+                ));
+            $fields = array(
+                'stripe_sid' => $subscription->id,
+                'status' => SUBSCRIPTION_STATES['active'],
+            );
+        }
 
-        \Drupal::database()->query("UPDATE {striper_subscriptions} s SET s.status = {:status} WHERE s.uid = {:uid}",
-                                   array(':uid' => $this->currentUser()->id(), ':status' => SUBSCRIPTION_STATES['active']));
+        \Drupal::database()->update('striper_subscriptions')->fields($fields)
+            ->condition('uid', $this->currentUser()->id())->execute();
 
         return $this->redirect('striper.app.user.subscriptions', array('user' => $this->currentUser()->id()));
     }

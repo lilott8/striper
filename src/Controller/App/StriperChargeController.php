@@ -83,16 +83,17 @@ class StriperChargeController extends ControllerBase {
               ),
             )
         );
-        $customer_id = $customer->id;
+        $customerId = $customer->id;
         $fields = array(
           'uid' => $user->id(),
-          'stripe_cid' => $customer_id,
+          'stripe_cid' => $customerId,
         );
         // Save the customer id in Drupal's database.
         $this->db->insert('striper_subscriptions')->fields($fields)->execute();
       }
       else {
-        $customer_id = $striperUser->stripe_cid;
+        // Otherwise, grab the customer id from the db.
+        $customerId = $striperUser->stripe_cid;
       }
 
       $subscription = NULL;
@@ -101,7 +102,7 @@ class StriperChargeController extends ControllerBase {
         // Create the subscription from the user.
         $subscription = Subscription::create(
             array(
-              "customer" => $customer_id,
+              "customer" => $customerId,
               "plan" => $config->get('id'),
               "trial_end" => "now",
               'metadata' => array(
@@ -113,7 +114,7 @@ class StriperChargeController extends ControllerBase {
         );
       }
       else {
-        // If the plan is expired or the plan has changed.
+        // Change the plan if expired or the plan has changed.
         $subscription = Subscription::retrieve($striperUser->stripe_sid);
         $subscription->plan = $config->get('id');
         $subscription->save();
@@ -126,6 +127,7 @@ class StriperChargeController extends ControllerBase {
         \Drupal::logger('striper')->warning(striper\StriperDebug::vd($subscription));
       }
       else {
+        // We want to updated the subscription record within striper.
         $fields = array(
           'plan' => $config->get('id'),
           'status' => SUBSCRIPTION_STATES['active'],

@@ -11,6 +11,7 @@ use Masterminds\HTML5\Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use \Stripe\Error\InvalidRequest;
+use Stripe\Subscription;
 
 /**
  * Class StriperUserSubscription
@@ -92,10 +93,15 @@ class StriperUserSubscription extends ControllerBase {
   }
 
   public function reactivate(Request $request) {
-    drupal_set_message($this->t("Successfully reactivated your subscription"));
-
     $striperSubscription = \Drupal::database()->query("SELECT * FROM {striper_subscriptions} s where s.uid = {:uid}",
                                                       array(':uid' => $this->currentUser()->id()))->fetchObject();
+
+    $striperPlan = \Drupal::configFactory()->get('striper.striper_plan.' . $striperSubscription->plan);
+    // Don't allow a user to subscribe to a plan that doesn't exist.
+    if (!$striperPlan->get("plan_active")) {
+      drupal_set_message(t("Plan @plan is no longer active, please subscribe to a new plan.", array("@plan" => $striperPlan->get("plan_name"))), 'warning');
+      return $this->redirect('striper.app.user.subscriptions', array('user' => $this->currentUser()->id()));
+    }
 
     try {
       $subscription = Subscription::retrieve($striperSubscription->stripe_sid);
@@ -105,6 +111,7 @@ class StriperUserSubscription extends ControllerBase {
           'stripe_sid' => $subscription->id,
           'status' => SUBSCRIPTION_STATES['active'],
       );
+      drupal_set_message($this->t("Successfully reactivated your subscription"));
     }
     catch (InvalidRequest $e) {
       $subscription = Subscription::create(

@@ -160,11 +160,4 @@ class StriperPlanEntity extends ConfigEntityBase implements StriperPlanInterface
      * @var string
      */
     public $plan_description;
-
-    /**
-     * Default plan to show users
-     *
-     * @var boolean
-     */
-    public $plan_default;
 }

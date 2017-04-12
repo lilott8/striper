@@ -29,6 +29,10 @@ class StriperUserSubscription extends ControllerBase {
     $this->stripe = new StriperStripeAPI();
   }
 
+  public function enroll(Request $request) {
+    return array();
+  }
+
   /**
    * @param Request $request
    *
@@ -45,8 +49,8 @@ class StriperUserSubscription extends ControllerBase {
     if ($userSubscription) {
       $subscription = $this->t('%name, your subscription ends on %date',
                                array(
-                                   '%name' => $this->currentUser()->getDisplayName(),
-                                   '%date' => \Drupal::service('date.formatter')->format($userSubscription->plan_end),
+                                 '%name' => $this->currentUser()->getDisplayName(),
+                                 '%date' => \Drupal::service('date.formatter')->format($userSubscription->plan_end),
                                ));
       if ($userSubscription->status == SUBSCRIPTION_STATES['active']) {
         $link = render(Link::createFromRoute($this->t('Cancel Subscription'),
@@ -67,9 +71,9 @@ class StriperUserSubscription extends ControllerBase {
 
     // TODO: figure out cache tags so I can change this more easily.
     return array(
-        '#theme' => 'striper_subscriptions',
-        '#link' => $link,
-        '#subscription' => $subscription,
+      '#theme' => 'striper_subscriptions',
+      '#link' => $link,
+      '#subscription' => $subscription,
     );
   }
 
@@ -108,31 +112,31 @@ class StriperUserSubscription extends ControllerBase {
       $subscription->plan = $striperSubscription->plan;
       $subscription->save();
       $fields = array(
-          'stripe_sid' => $subscription->id,
-          'status' => SUBSCRIPTION_STATES['active'],
+        'stripe_sid' => $subscription->id,
+        'status' => SUBSCRIPTION_STATES['active'],
       );
       drupal_set_message($this->t("Successfully reactivated your subscription"));
     }
     catch (InvalidRequest $e) {
       $subscription = Subscription::create(
           array(
-              "customer" => $striperSubscription->stripe_cid,
-              "plan" => $striperSubscription->plan,
-              "trial_end" => "now",
-              'metadata' => array(
-                  'plan' => $striperSubscription->plan,
-                  'email' => $this->currentUser()->getEmail(),
-                  'uid' => $this->currentUser()->id(),
-              ),
+            "customer" => $striperSubscription->stripe_cid,
+            "plan" => $striperSubscription->plan,
+            "trial_end" => "now",
+            'metadata' => array(
+              'plan' => $striperSubscription->plan,
+              'email' => $this->currentUser()->getEmail(),
+              'uid' => $this->currentUser()->id(),
+            ),
           ));
       $fields = array(
-          'stripe_sid' => $subscription->id,
-          'status' => SUBSCRIPTION_STATES['active'],
+        'stripe_sid' => $subscription->id,
+        'status' => SUBSCRIPTION_STATES['active'],
       );
     }
 
     \Drupal::database()->update('striper_subscriptions')->fields($fields)
-        ->condition('uid', $this->currentUser()->id())->execute();
+      ->condition('uid', $this->currentUser()->id())->execute();
 
     return $this->redirect('striper.app.user.subscriptions', array('user' => $this->currentUser()->id()));
   }

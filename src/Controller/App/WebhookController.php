@@ -316,8 +316,10 @@ class WebhookController extends ControllerBase {
           'plan_name' => $event->data->object->name,
           'plan_price' => $event->data->object->amount,
           'plan_frequency' => "{$event->data->object->interval_count}-{$event->data->object->interval}",
-          'plan_description' => $event->data->object->metadata->description,
       );
+      if (!empty($event->data->object->metadata->description) && !is_null($event->data->object->metadata->description)) {
+        $values['plan_description'] = $event->data->object->metadata->description;
+      }
       $plan->setData($values);
       $plan->save();
       drupal_set_message($this->t('Plan %name has been updated.', array('%name' => $plan->get('plan_name'))));
@@ -335,7 +337,9 @@ class WebhookController extends ControllerBase {
   private function plandeleted($event) {
     $plan = \Drupal::configFactory()->getEditable("striper.striper_plan.{$event->data->object->id}");
     if (!is_null($plan)) {
-      $plan->delete();
+      $plan->set('plan_active', FALSE);
+      $plan->save();
+      //$plan->delete();
       drupal_set_message($this->t('Plan %name has been deleted.', array('%name' => $plan->get('plan_name'))));
       \Drupal::logger('striper')->notice('Plan %name has been deleted.', ['%name' => $plan->get('plan_name')]);
     }

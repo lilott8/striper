@@ -90,6 +90,16 @@ striper.app.user.subscriptions.cancel:
   requirements:
     _user_is_logged_in: 'TRUE'
 
+striper.app.user.subscriptions.reactivate:
+  path: '/user/{user}/striper/reactivate'
+  defaults:
+    _title: 'Cancel Subscription'
+    _controller: '\Drupal\striper\Controller\App\StriperUserSubscription::reactivate'
+  options:
+    user: \d+
+  requirements:
+    _user_is_logged_in: 'TRUE'
+
 striper.app.webhook:
   path: 'striper/webhook'
   methods: [POST]

@@ -37,6 +37,13 @@ function striper_schema() {
                 'default' => '',
                 'description' => 'Stripe customer id'
             ),
+            'stripe_sid' => array(
+                'type' => 'varchar',
+                'not null' => TRUE,
+                'length' => 255,
+                'default' => '',
+                'description' => 'The stripe subscription id'
+            ),
             'status' => array(
                 'type' => 'varchar',
                 'not null' => TRUE,
@@ -67,23 +74,4 @@ function striper_schema() {
         'primary key' => array('id'),
     );
     return $schema;
-}
-
-/**
- * Save the subscription id in the database
- * @param $sandbox
- */
-
-function striper_update_8001(&$sandbox) {
-    $column = array(
-        'type' => 'varchar',
-        'not null' => TRUE,
-        'length' => 255,
-        'default' => '',
-        'description' => 'The stripe subscription id'
-    );
-
-    $schema = Database::getConnection()->schema();
-    // table, name of new column, data
-    $schema->addField('striper_subscriptions', 'stripe_sid', $column);
 }

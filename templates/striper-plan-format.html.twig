@@ -5,6 +5,7 @@
                 src="https://checkout.stripe.com/checkout.js" class="stripe-button"
                 data-key="{{ data.key }}"
                 data-amount="{{ data.amount }}"
+                data-email="{{ data.email }}"
 
                 {% if data.company_name %}
                 data-name="{{ data.company_name }}"

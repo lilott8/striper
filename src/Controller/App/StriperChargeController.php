@@ -3,17 +3,15 @@
 namespace Drupal\striper\Controller\App;
 
 use Drupal\striper;
-use Drupal\Core\Controller\ControllerBase;
-use Masterminds\HTML5\Exception;
 use Stripe\Charge;
+use Drupal\striper\StriperStripeAPI;
+use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use \Drupal\user\Entity\User;
-use \Drupal\user\Entity\Role;
+use Drupal\user\Entity\User;
+use Drupal\user\Entity\Role;
 
 /**
- * Class StriperChargeController
+ * Manages the charging of a customer.
  *
  * @package Drupal\striper\Controller\App
  */
@@ -31,21 +29,30 @@ class StriperChargeController extends ControllerBase {
    * {@inheritdoc}
    */
   public function __construct() {
-    $this->striperApi = new striper\StriperStripeAPI();
+    $this->striperApi = new StriperStripeAPI();
     $this->db = \Drupal::database();
   }
 
   /**
-   * 1) See if the user has a subscription
-   * 2) if we don't have them in stripe, add them
-   * 3) If they have a subscription and not the same, update
-   * 4) if it is the same and still subscribed, do nothing
    *
    * @throws Exception
    *  sdfaf
    *
    * @return string
    *   Return Hello string.
+   */
+
+  /**
+   * Charge the user
+   * 1) See if the user has a subscription
+   *  2) if we don't have them in stripe, add them
+   *  3) If they have a subscription and not the same, update
+   *  4) if it is the same and still subscribed, do nothing.
+   *
+   * @param \Symfony\Component\HttpFoundation|Request $request
+   *
+   * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+   * @throws \Exception
    */
   public function charge(Request $request) {
     // Load the user.

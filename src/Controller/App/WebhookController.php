@@ -215,9 +215,9 @@ class WebhookController extends ControllerBase {
     $user = User::load($stripeUser->uid);
 
     $fields = array(
-        'plan' => 'none',
-        'plan_end' => -1,
-        'status' => SUBSCRIPTION_STATES['inactive'],
+      'plan' => 'none',
+      'plan_end' => -1,
+      'status' => SUBSCRIPTION_STATES['inactive'],
     );
     $this->db->update('striper_subscriptions')->fields($fields)->condition('uid', $user->id())->execute();
 
